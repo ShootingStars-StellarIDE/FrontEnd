@@ -1,250 +1,158 @@
-import { Form } from "react-router-dom";
 import "../styles/SignUp.css";
-import { useState } from "react";
+import SignupForm from "../components/Signup/SignupForm";
+import * as auth from "../apis/auth";
+import { useNavigate } from "react-router-dom";
 
 function SignUpPage() {
-  const nicknameList = ["test", "test1", "test2", "test3", "test4"];
+  const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [authCode, setAuthCode] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState(" ");
-  const [emailAuthError, setEmailAuthError] = useState(" ");
-  const [nicknameError, setNicknameError] = useState(
-    " 닉네임은 영어 소문자와 숫자로 5~20자로 이루어져야 합니다"
-  );
+  //회원가입 요청
+  const join = async (form) => {
+    console.log(form);
+    let response;
+    let data;
 
-  const [passwordError, setPasswordError] = useState(
-    "(영어,특수문자,숫자)를 포함한 8~16자를 입력하세요"
-  );
-  const [rePassword, setRePassword] = useState(" ");
-  const [rePasswordError, setRePasswordError] = useState(" ");
-
-  function onChangeEmail(event) {
-    setEmail(event.target.value);
-  }
-
-  function onClickEmailAuth(event) {
-    if (email.includes("@") === false) {
-      setEmailError("이메일이 올바르지 않습니다. @가 포함된 형식을 써주세요");
-    } else {
-      setEmailError("올바르게 전송되었습니다.");
+    try {
+      console.log(data);
+      console.log(response);
+      console.log(form.email);
+      response = await auth.signup(form.email, form.nickname, form.password);
+    } catch (error) {
+      console.log(`${error}`);
+      console.log("회원가입 요청 중 에러가 발생하였습니다.");
+      return;
     }
-  }
 
-  function onChangeEmailAuth(event) {
-    setAuthCode(event.target.value);
-  }
+    data = response.data;
+    const status = response.status;
+    console.log(`data : ${data}`);
+    console.log(`status : ${status}`);
 
-  function onClickCheckAuthCode(event) {
-    if (authCode !== "abcdefgh") {
-      setEmailAuthError("코드가 불일치합니다. 확인해주세요");
+    if (status === 200) {
+      console.log(`회원가입 성공!`);
+      navigate("/");
     } else {
-      setEmailAuthError("인증되었습니다.");
-    }
-  }
-
-  function onChangeNickname(event) {
-    setNickname(event.target.value);
-  }
-
-  function onClickNickname(event) {
-    const nicknameCheck = /^[a-z0-9]{5,20}$/;
-
-    if (!nicknameCheck.test(nickname)) {
-      setNicknameError("닉네임이 조건에 맞지 않습니다.");
-    } else if (nicknameList.includes(nickname)) {
-      setNicknameError(
-        "이미 사용중인 닉네임입니다. 다른 닉네임을 사용해주세요."
-      );
-    } else {
-      setNicknameError("사용가능한 닉네임입니다.");
-    }
-  }
-
-  const onChangePassword = (event) => {
-    setPassword(event.target.value); // 비밀번호 상태를 업데이트
-  };
-
-  // onKeyUp 이벤트 핸들러
-  const onKeyUpPassword = (event) => {
-    // 엔터 키가 눌렸는지 확인
-    if (event.key === "Enter") {
-      // 입력된 비밀번호가 없으면 기본 안내문을 다시 설정
-      if (!event.target.value) {
-        setPasswordError("(영어,특수문자,숫자)를 포함한 8~16자를 입력하세요");
-      } else {
-        PasswordAuthCheck(event.target.value);
-      }
+      console.log(`회원 가입 실패!~`);
     }
   };
-
-  function PasswordAuthCheck(inputPassword) {
-    const passwordAuthCheck =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
-    if (!passwordAuthCheck.test(inputPassword)) {
-      setPasswordError("비밀번호가 조건에 맞지 않습니다.");
-    } else {
-      setPasswordError("사용 가능한 비밀번호입니다.");
+  //----------------------------------------------------------------
+  //이메일 중복 확인
+  const emailCheck = async (email) => {
+    console.log(email);
+    let response;
+    let data;
+    try {
+      response = await auth.emailCheck(email);
+    } catch (error) {
+      console.log(`${error}`);
+      console.log("이메일 인증 문제");
+      return;
     }
-  }
 
-  const onChangeRePassword = (event) => {
-    setRePassword(event.target.value);
+    data = response.data;
+    const status = response.status;
+    console.log(`data : ${data}`);
+    console.log(`status : ${status}`);
+
+    if (status === 200) {
+      console.log(`메일 인증 성공!`);
+    } else {
+      console.log(`메일 인증 실패!`);
+    }
+
+    return response;
   };
 
-  // 비밀번호 확인 검사 함수
-  const checkRePassword = () => {
-    if (rePassword === "") {
-      setRePasswordError("");
-    } else if (password !== rePassword) {
-      setRePasswordError("비밀번호가 일치하지 않습니다.");
-    } else {
-      setRePasswordError("비밀번호가 일치합니다.");
+  //이메일 인증
+  const sendEmailAuthRequest = async (email) => {
+    console.log(email);
+    let response;
+    let data;
+    try {
+      response = await auth.authEmailCode(email);
+    } catch (error) {
+      console.log(`${error}`);
+      console.log("유효하지 않은 이메일입니다.");
+      return;
     }
+
+    data = response.data;
+    const status = response.status;
+    console.log(`data : ${data}`);
+    console.log(`status : ${status}`);
+
+    if (status === 200) {
+      console.log(`메일 보내기 성공!`);
+    } else {
+      console.log(`메일 보내기 실패!`);
+    }
+    return response;
+  };
+
+  //----------------------------------------------------------------
+
+  //코드 인증
+  const CodeCheck = async (email, code) => {
+    console.log(email, code);
+    let response;
+    let data;
+    try {
+      response = await auth.emailCodeCheck(email, code);
+    } catch (error) {
+      console.log(`${error}`);
+      console.log("유효하지 않은 코드입니다.");
+      return;
+    }
+
+    data = response.data;
+    const status = response.status;
+    console.log(`data : ${data}`);
+    console.log(`status : ${status}`);
+
+    if (status === 200) {
+      console.log(`인증에 성공하였습니다`);
+    } else {
+      console.log(`인증에 실패하였습니다`);
+    }
+    return response;
+  };
+
+  //----------------------------------------------------------------
+
+  //닉네임 중복 검사 인증
+  const nickNameCheck = async (nickname) => {
+    console.log(nickname);
+    let response;
+    let data;
+    try {
+      response = await auth.nickNameCheck(nickname);
+    } catch (error) {
+      console.log(`${error}`);
+      console.log("사용중인 닉네임입니다.");
+      return;
+    }
+
+    data = response.data;
+    const status = response.status;
+    console.log(`data : ${data}`);
+    console.log(`status : ${status}`);
+
+    if (status === 200) {
+      console.log(`사용가능한 닉네임입니다.`);
+    } else {
+      console.log(`사용중인 닉네임입니다.`);
+    }
+    return response;
   };
 
   return (
-    <div className="Signup-container">
-      <div className="Signup-Form">
-        <h1>회원가입</h1>
-        <div className="Signup-email-container">
-          <label htmlFor="Signup-email">이메일</label>
-          <input
-            className="signup-input"
-            type="text"
-            id="Signup-email"
-            placeholder="이메일을 입력해주세요"
-            onChange={onChangeEmail}
-          />
-          <button className="Signup-auth-button" onClick={onClickEmailAuth}>
-            인증하기
-          </button>
-        </div>
-        {emailError && (
-          <div
-            className={`error-message ${
-              emailError === "올바르게 전송되었습니다."
-                ? "is-valid"
-                : "is-error"
-            }`}
-          >
-            {emailError}
-          </div>
-        )}
-
-        <div className="Signup-emailAuth-container">
-          <label htmlFor="Signup-emailAuth">이메일인증</label>
-          <input
-            className="signup-input"
-            type="text"
-            id="Signup-emailAuth"
-            placeholder="인증코드를 입력해주세요"
-            onChange={onChangeEmailAuth}
-          />
-          <button className="Signup-auth-button" onClick={onClickCheckAuthCode}>
-            확인
-          </button>
-        </div>
-        {emailAuthError && (
-          <div
-            className={`error-message ${
-              emailAuthError
-                ? emailAuthError === "인증되었습니다."
-                  ? "is-valid"
-                  : "is-error"
-                : ""
-            }`}
-            style={{ visibility: emailAuthError ? "visible" : "hidden" }}
-          >
-            {emailAuthError || ""}
-          </div>
-        )}
-
-        <div className="Signup-nickname-container">
-          <label htmlFor="Signup-nickname">닉네임</label>
-          <input
-            className="signup-input"
-            type="text"
-            id="Signup-nickname"
-            placeholder=" 입력해주세요"
-            onChange={onChangeNickname}
-          />
-          <button className="Signup-auth-button" onClick={onClickNickname}>
-            중복검사
-          </button>
-        </div>
-        {nicknameError && (
-          <div
-            className={`error-message ${
-              nicknameError === "사용가능한 닉네임입니다."
-                ? "is-valid"
-                : nicknameError &&
-                  nicknameError !==
-                    " 닉네임은 영어 소문자와 숫자로 5~20자로 이루어져야 합니다"
-                ? "is-error"
-                : "" // 입력 내용이 없거나 초기 안내문일 때는 아무 추가 클래스도 적용하지 않음
-            }`}
-          >
-            {nicknameError}
-          </div>
-        )}
-
-        <div className="Signup-password-container">
-          <label htmlFor="Signup-password">비밀번호</label>
-          <input
-            className="signup-input"
-            type="password"
-            id="Signup-password"
-            placeholder="비밀번호를 입력해주세요"
-            onChange={onChangePassword} // 비밀번호를 입력할 때마다 상태 업데이트
-            onKeyUp={onKeyUpPassword}
-          />
-          <div className="input-null"></div>
-        </div>
-        {passwordError && (
-          <div
-            className={`error-message ${
-              passwordError === "사용 가능한 비밀번호입니다."
-                ? "is-valid"
-                : passwordError &&
-                  passwordError !==
-                    "(영어,특수문자,숫자)를 포함한 8~16자를 입력하세요"
-                ? "is-error"
-                : "" // 입력 내용이 없거나 초기 안내문일 때는 아무 추가 클래스도 적용하지 않음
-            }`}
-          >
-            {passwordError}
-          </div>
-        )}
-
-        <div className="Signup-re-password-container">
-          <label htmlFor="Signup-re-password">비밀번호 확인</label>
-          <input
-            className="signup-input"
-            type="password"
-            id="Signup-re-password"
-            placeholder="비밀번호를 다시 입력해주세요"
-            onChange={onChangeRePassword}
-            onKeyUp={checkRePassword}
-          />
-          <div className="input-null"></div>
-        </div>
-        {rePasswordError && (
-          <div
-            className={`error-message ${
-              rePasswordError === "비밀번호가 일치합니다."
-                ? "is-valid"
-                : "is-error"
-            }`}
-          >
-            {rePasswordError}
-          </div>
-        )}
-        <button className="Signup-signup-button">회원가입</button>
-      </div>
-    </div>
+    <SignupForm
+      join={join}
+      sendEmailAuthRequest={sendEmailAuthRequest}
+      emailCheck={emailCheck}
+      CodeCheck={CodeCheck}
+      nickNameCheck={nickNameCheck}
+    />
   );
 }
 

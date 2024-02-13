@@ -1,0 +1,35 @@
+{
+  "user": [
+    {
+      "id": 0,
+      "email": "dannyday@naver.com",
+      "password": "sl113207@@",
+      "nickName": "dannyday1",
+      "login": false
+    },
+    {
+      "id": 1,
+      "email": "a@a.com",
+      "password": "sl123456@@",
+      "nickName": "dannyday2",
+      "login": false
+    },
+    {
+      "id": 2,
+      "email": "b@b.com",
+      "password": "sl113207@@",
+      "nickName": "dannyday3",
+      "login": false
+    },
+    {
+      "email": "dannyday",
+      "password": "sl113207@@",
+      "id": 3
+    },
+    {
+      "email": "dannyday@naver.com",
+      "password": "sl113207@@",
+      "id": 4
+    }
+  ]
+}
