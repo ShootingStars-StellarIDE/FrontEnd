@@ -6,15 +6,6 @@ import LoginForm from "../components/Login/LoginForm";
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   console.log(localStorage.getItem("Authorization"));
-  //   if (localStorage.getItem("Authorization")) {
-  //     navigate(`/dashboard/containers`);
-  //   } else {
-  //     navigate(`/`);
-  //   }
-  // }, []);
-
   return (
     <div>
       <LoginForm />
