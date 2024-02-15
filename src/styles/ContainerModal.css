@@ -1,0 +1,67 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); */
+  width: 400px; 
+}
+
+.modal .buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal button {
+  /* 버튼 스타일 */
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+}
+
+.modal input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 0px;
+  border-bottom: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box; /* 패딩을 너비에 포함 */
+}
+
+.modal textarea {
+  /* 입력 필드와 텍스트 영역 스타일 */
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 0px;
+  border-bottom: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.modal textarea {
+  /* 텍스트 영역 높이 설정 */
+  height: 150px;
+}
+
+.modal h3 {
+  /* 모달창 제목 스타일 */
+  margin-bottom: 20px;
+}
