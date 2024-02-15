@@ -1,0 +1,80 @@
+.edit-page {
+    display: flex;
+    height: 100vh;
+    color: white;
+  background-color: #181818;
+}
+
+.tree-container,
+.editor-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.tree-container {
+    width: 20%;
+    border-right: 1px solid #333;
+}
+
+.tree-bar {
+  padding: 16px;
+  border-bottom: 1px solid #333;
+}
+
+.tree-main {
+  padding: 10px;
+  overflow: auto;
+}
+
+.editor-container {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.tabs {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-x: auto;
+}
+  
+.tab-list {
+    display: flex;
+}
+  
+.tab {
+    padding: 16px 6px 16px 16px;
+    border-right: 1px solid #333;
+    cursor: pointer;
+}
+  
+.tab.active {
+    background-color: #252526;
+    border-bottom: 1px solid rgb(42, 122, 241); 
+}
+  
+.tab-panel {
+    border-top: 1px solid #333;
+}
+
+.close-tab {
+    background-color: #252526;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.close-tab:hover {
+    background-color: black;
+}
+
+.result {
+  padding: 20px;
+  background-color: #181818;
+  color: red;
+  border-top: 1px solid #333;
+  height: 100%;
+  overflow: auto;
+}
