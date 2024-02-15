@@ -27,7 +27,7 @@
   height: 100vh;
 }
 
-.Login-singupQA {
+.Login-signupQA {
   display: flex;
   flex-direction: row;
 }
@@ -71,7 +71,7 @@ input {
   margin-top: 70px;
 }
 
-.Login-gotosingup {
+.Login-gotosignup {
   color: #4ed9a5;
 }
 label {
@@ -82,20 +82,22 @@ label {
   width: 100px;
 }
 
-.search-password {
+.Login-gotosignup {
   cursor: pointer;
 }
 
-.Login-gotosingup {
-  cursor: pointer;
-}
-
-.search-password,
-.Login-singupQA {
-  margin-top: 15px;
-}
-
-.search-email {
+.Login-signupQA {
   margin-top: 50px;
-  cursor: pointer;
+}
+
+.error-message {
+  font-size: 14px;
+  min-height: 20px;
+  margin-top: 5px;
+  visibility: hidden;
+}
+
+.error-message.is-error {
+  color: red;
+  visibility: visible;
 }

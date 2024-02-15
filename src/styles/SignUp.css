@@ -115,4 +115,5 @@
 
 .is-valid {
   color: #4ed9a5;
+  visibility: visible;
 }
