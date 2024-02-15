@@ -1,45 +1,120 @@
-.main-container {
-    background-color: #E3ECF1;
-}
-
 .sidebar {
-    background-color: #E3ECF1;
-    border-right: 4px solid #202020;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    transition: 0.4s ease;
-    color: #202020;
-    height: 100%;
-    z-index: 99;
-}
-
-.button {
-    position: relative;
-    left: 330px;
-    top: 10px;
-    width: 40px;
-    height: 40px;
-    z-index: 99;
-    transition: 0.8s ease;
-    border: 2px solid #202020;
-    border-radius: 40px;
-    overflow: hidden;
-}
-
-.openBtn {
-    width: 100%;
+    padding: 20px;
+    background-color: white;
+    box-sizing: border-box;
+    min-width: 300px;
+    width: 25%;
     height: 100%;
 }
 
-.content {
-    padding: 40px 40px 0 20px;
-    position: relative;
-    width: 100%;
-}
+    .profilecard {
+        display: flex;
+        flex-direction: column;
+        justify-content: top;
+        align-items: flex-start;
+        padding: 20px 10px;
+        border-bottom: 1px solid #bbbbbb40;
+    }
 
-.icon {
-    margin: 0;
-    color: #202020;
-}
+        .picdisplay {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+            .pic {
+                cursor: pointer;
+            }
+
+            .pic img {
+                border-radius: 30%;
+            }
+
+            .welcomement {
+                display: flex;
+                flex-direction: column;
+                margin-left: 10px;
+            }
+
+                .welcomement p {
+                    margin: 0px;
+                    color: #5c5c5c;
+                    font-size: 16px;
+                }
+
+    .conspace {
+        padding: 20px 10px;
+        border-bottom: 1px solid #bbbbbb40;
+    }
+
+        .conspace div {
+            margin: 10px 0px;
+            padding-left: 20px;
+            background-color: #bbbbbb40;
+            border-radius: 8px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: #5c5c5c;
+        }
+
+    .dmlist {
+        padding: 20px 10px;
+        
+    }
+
+        .dmlist div {
+            margin: 10px 0px;
+            padding-left: 10px;
+            background-color: #bbbbbb40;
+            border-radius: 8px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .dmlist img {
+            width: 32px;
+            height: 32px;
+            padding: 0px;
+            margin: 0px;
+            margin-right: 10px;
+            border-radius: 30%;
+        }
+
+        .dmlist p {
+            color: #5c5c5c;
+        }
+
+    /* Safari 브라우저용 사용자 정의 스타일 */
+    summary::-webkit-details-marker {
+        display: none;
+    }
+
+    /* 그 외의 브라우저용 사용자 정의 스타일 */
+    summary {
+        display: block;
+    }
+
+    summary {
+        position: relative;
+        cursor: pointer;
+    }
+
+    summary::before {
+        content: "";
+        position: absolute;
+        border-top: 0.4em solid transparent;
+        border-bottom: 0.4em solid transparent;
+        border-right: 0.45em solid rgb(40, 40, 40);
+        top: 0.3em;
+        right: 0;
+        transition: .1s transform;
+    }
+
+    details[open] summary:before {
+        transform: rotateZ(-90deg);
+    }

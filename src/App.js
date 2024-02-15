@@ -18,7 +18,7 @@ function App() {
             path={"/dashboard/containers"}
             element={<ContainerListPage />}
           />
-          <Route path={"/dashboard/profile"} element={<ProfilePage/>}/>
+          <Route path={"/dashboard/profile"} element={<ProfilePage/>} />
           <Route path={"/containers/1"} element={<ContainerEditPage />} />
 
         </Routes>

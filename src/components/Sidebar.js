@@ -1,56 +1,68 @@
-import React, { useEffect, useRef, useState } from "react";
-import styles from "../styles/Sidebar.css";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
+function Sidebar() {
 
-const Sidebar = ({ width = 280, children }) => {
-    const [isOpen, setOpen] = useState(false);
-    const [xPosition, setX] = useState(width);
-    const side = useRef();
+    const navigate = useNavigate();
 
-    // button 클릭 시 토글
-    const toggleMenu = () => {
-        if (xPosition > 0) {
-            setX(0);
-            setOpen(true);
-        } else {
-            setX(width);
-            setOpen(false);
-        }
+    const goToProfile = () => {
+        navigate(`/dashboard/profile`);
     };
 
-    // 사이드바 외부 클릭시 닫히는 함수
-    const handleClose = async e => {
-        let sideArea = side.current;
-        let sideCildren = side.current.contains(e.target);
-        if (isOpen && (!sideArea || !sideCildren)) {
-            await setX(width);
-            await setOpen(false);
-        }
-    }
+    const goToContainerList = () => {
+        navigate(`/dashboard/containers`);
+    };
 
-    useEffect(() => {
-        window.addEventListener('click', handleClose);
-        return () => {
-            window.removeEventListener('click', handleClose);
-        };
-    })
+    const DmUserClick = () => {
+        alert("dm창 띄우기");
+    };
 
+    const dmusers = ['IU', 'Jungkook', 'Eunha', 'Eunji'];
 
     return (
-        <div className={styles.container}>
-            <div ref={side} className={styles.sidebar} style={{ width: `${width}px`, height: '100%', transform: `translatex(${-xPosition}px)` }}>
-                <button onClick={() => toggleMenu()}
-                    className={styles.button} >
-                    {isOpen ?
-                        <span>X</span> : <span>O</span>
-                    }
-                </button>
 
-                <div className={styles.content}>{children}</div>
+        <div className="sidebar">
+            {/* 프로필 카드 */}
+            <div className="profilecard">
+                <div className="picdisplay">
+                    <div className="pic"
+                        onClick={goToProfile}
+                    >
+                        <img src="https://exp.goorm.io/_next/image?url=https%3A%2F%2Fexp-upload.goorm.io%2F2023-11-13%2FN%2FN20D3vbX1qrGSyOcnU.webp&w=96&q=75" />
+                    </div>
+                    <div className="welcomement">
+                        <p>별똥별 님</p>
+                        <p>환영합니다!</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* 컨테이너 스페이스 */}
+            <div className="conspace">
+                <details open>
+                    <summary>스페이스</summary>
+                    <div onClick={goToContainerList}>모든 컨테이너</div>
+                    <div>내 컨테이너</div>
+                    <div>공유 컨테이너</div>
+                </details>
+
+            </div>
+
+            {/* 다이렉트 메시지 */}
+            <div className="dmlist">
+                <details open>
+                    <summary>DM</summary>
+                    {dmusers.map((dmuser, dmlistkey) => (
+                        <div key={dmlistkey} onClick={DmUserClick}>
+                            <img src="https://exp.goorm.io/_next/image?url=https%3A%2F%2Fexp-upload.goorm.io%2F2023-11-13%2FN%2FN20D3vbX1qrGSyOcnU.webp&w=96&q=75" />
+                            <p>{dmuser}</p>
+                        </div>
+                    ))}
+                </details>
             </div>
         </div>
-    );
-};
 
+    );
+}
 
 export default Sidebar;
