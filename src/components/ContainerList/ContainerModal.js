@@ -1,6 +1,6 @@
 // import React from "react";
 import React, { useState } from "react";
-import "../styles/ContainerModal.css";
+import "../../styles/ContainerModal.css";
 
 function ContainerModal({ isOpen, close }) {
   const [selectedLang, setSelectedLang] = useState(""); // 선택된 언어를 저장하는 상태 변수

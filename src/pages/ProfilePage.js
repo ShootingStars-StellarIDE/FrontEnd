@@ -5,9 +5,9 @@ import "../styles/Sidebar.css"
 import "../styles/UserProfile.css"
 import "../styles/ContainerListPage.css"
 
-import Sidebar from "../components/Sidebar";
-import UserProfile from "../components/UserProfile";
-import ChatBubble from "../components/ChatBubble";
+import Sidebar from "../components/ContainerList/Sidebar";
+import UserProfile from "../components/UserProfile/UserProfile";
+import ChatBubble from "../components/ContainerList/ChatBubble";
 
 function ProfilePage() {
 

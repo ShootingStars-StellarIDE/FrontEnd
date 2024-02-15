@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "../styles/ChatBubble.css"
+import "../../styles/ChatBubble.css"
 
 function ChatBubble() {
   const [isChatOpen, setChatOpen] = useState(false);

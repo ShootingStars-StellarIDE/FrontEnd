@@ -7,12 +7,12 @@ import "../styles/ContainerList.css"
 import "../styles/UserProfile.css"
 
 
-import ContainerModal from "../components/ContainerModal";
+import ContainerModal from "../components/ContainerList/ContainerModal";
 import "../styles/ContainerModal.css"
 
-import Sidebar from "../components/Sidebar";
-import ContainerList from "../components/ContainerList";
-import ChatBubble from "../components/ChatBubble";
+import Sidebar from "../components/ContainerList/Sidebar";
+import ContainerList from "../components/ContainerList/ContainerList";
+import ChatBubble from "../components/ContainerList/ChatBubble";
 
 function ContainerListPage() {
 
