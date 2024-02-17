@@ -18,10 +18,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: top;
     box-sizing: border-box;
     width: 100%;
     height: 100%;
+    /* position: absolute; */
 }
 
 .contents-header {
@@ -56,6 +56,26 @@
     background-color: #f0f0f0;
     border-radius: 30%;
     margin: 20px auto;
+    position: relative; /* 알림 마크의 위치를 기준으로 사용 */
+    display: inline-block; /* 필요에 따라 조정 */
+}
+
+.notification-badge {
+    position: absolute;
+    bottom: 0px;
+    right: 0px; 
+    background-color: gray; 
+    color: white; 
+    border-radius: 50%; 
+    padding: 5px; 
+    font-size: 12px; 
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.notification-badge img {
+    width: 16px;
 }
 
 .profile-name {
@@ -84,6 +104,10 @@
 }
 
 .password-input {
+    margin-top: 20px;
+}
+
+.password-input, .new-password-input {
     height: 30px;
     border: none;
     border-bottom: 1px solid #4ed9a5;
@@ -103,3 +127,24 @@
     cursor: pointer;
     margin-top: 50px;
 }
+
+.spacebox {
+    height: 30px;
+}
+
+.Signup-Form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transform: translate(0%, 0%);
+}
+
+.is-error {
+    color: red;
+  }
+  
+  .is-valid {
+    color: #4ed9a5;
+    visibility: visible;
+  }

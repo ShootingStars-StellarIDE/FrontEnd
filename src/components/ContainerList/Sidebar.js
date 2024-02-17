@@ -28,7 +28,7 @@ function Sidebar() {
                     <div className="pic"
                         onClick={goToProfile}
                     >
-                        <img src="https://exp.goorm.io/_next/image?url=https%3A%2F%2Fexp-upload.goorm.io%2F2023-11-13%2FN%2FN20D3vbX1qrGSyOcnU.webp&w=96&q=75" />
+                        <img src="https://exp.goorm.io/_next/image?url=https%3A%2F%2Fexp-upload.goorm.io%2F2023-11-13%2FN%2FN20D3vbX1qrGSyOcnU.webp&w=96&q=75" alt="UserIcon"/>
                     </div>
                     <div className="welcomement">
                         <p>별똥별 님</p>
@@ -40,7 +40,7 @@ function Sidebar() {
             {/* 컨테이너 스페이스 */}
             <div className="conspace">
                 <details open>
-                    <summary>스페이스</summary>
+                    <summary>Containers</summary>
                     <div onClick={goToContainerList}>모든 컨테이너</div>
                     <div>내 컨테이너</div>
                     <div>공유 컨테이너</div>
@@ -54,7 +54,7 @@ function Sidebar() {
                     <summary>DM</summary>
                     {dmusers.map((dmuser, dmlistkey) => (
                         <div key={dmlistkey} onClick={DmUserClick}>
-                            <img src="https://exp.goorm.io/_next/image?url=https%3A%2F%2Fexp-upload.goorm.io%2F2023-11-13%2FN%2FN20D3vbX1qrGSyOcnU.webp&w=96&q=75" />
+                            <img src="https://exp.goorm.io/_next/image?url=https%3A%2F%2Fexp-upload.goorm.io%2F2023-11-13%2FN%2FN20D3vbX1qrGSyOcnU.webp&w=96&q=75" alt="DmIcon"/>
                             <p>{dmuser}</p>
                         </div>
                     ))}
