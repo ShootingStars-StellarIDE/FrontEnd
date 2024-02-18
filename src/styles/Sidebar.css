@@ -58,6 +58,7 @@
             align-items: center;
             cursor: pointer;
             color: #5c5c5c;
+            font-weight: bold;
         }
 
     .dmlist {
@@ -87,21 +88,14 @@
 
         .dmlist p {
             color: #5c5c5c;
+            font-weight: bold;
         }
 
-    /* Safari 브라우저용 사용자 정의 스타일 */
-    summary::-webkit-details-marker {
-        display: none;
-    }
-
-    /* 그 외의 브라우저용 사용자 정의 스타일 */
     summary {
         display: block;
-    }
-
-    summary {
         position: relative;
         cursor: pointer;
+        font-weight: bold;
     }
 
     summary::before {

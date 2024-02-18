@@ -52,7 +52,7 @@
                 width: 100%;
                 border: 1px solid #bbb;
                 border-radius: 8px;
-                padding: 10px 12px;
+                padding: 4px 12px;
                 font-size: 14px;
             }
             
@@ -110,17 +110,37 @@
             .concards .conname {
                 margin: 5px 0px;
                 font-size: 16px;
+                font-weight: bold;
+            }
+
+            .conname-line {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .esd-icons {
+                display: flex;
+                justify-content: end;
+            }
+
+            .esd-icons img {
+                width: 14px;
+                margin: 0px 3px;
+                cursor: pointer;
             }
 
             .concards .idelang {
                 margin: 5px 0px;
                 font-size: 14px;
                 color: #4ed9a5;
+                font-weight: bold;
             }
 
-            .concards .space {
+            .concards .condesc {
                 flex-grow: 1;
-                height: 110px;
+                margin: 10px 0px;
+                height: 90px;
+                color: #5c5c5c;
             }
 
             .concards .idestart {
@@ -132,5 +152,6 @@
                 cursor: pointer;
                 background-color: #4ed9a5;
                 border-radius: 8px;
+                font-weight: bold;
             }
     
