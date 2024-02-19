@@ -17,7 +17,12 @@ export const nickNameCheck = (nickname) =>
   api.post(`/api/check-duplicate/nickname`, { nickname });
 
 //Access Token 재발급
-export const authRefresh = () => api.post(`/api/auth/refresh`);
+export const authRefresh = () => {
+  const token = localStorage.getItem("Authorization");
+  return api.post(`/api/auth/refresh`, null, {
+    headers: { Authorization: token },
+  });
+};
 
 //회원가입(사용)
 export const signup = (email, nickname, password) =>

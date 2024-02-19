@@ -15,6 +15,14 @@
   cursor: pointer;
 }
 
+#closeChat {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
 #openChat {
   background: none;
   border: none;
@@ -30,8 +38,8 @@
   position: fixed;
   bottom: 30px;
   right: 30px;
-  width: 350px;
-  height: 500px;
+  width: 400px;
+  height: 800px;
   background-color: white;
   border-radius: 15px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
@@ -39,7 +47,7 @@
 }
 
 .chat-header {
-  background-color: #f1f1f1;
+  background-color: #4ed9a5;
   padding: 10px;
   display: flex;
   justify-content: space-between;
@@ -47,30 +55,92 @@
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
 }
-
-#closeChat {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  flex: 1;
+  overflow-y: scroll;
+  color: black;
+  max-height: 600px;
+}
+.message {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%; /* 메시지 최대 너비 설정 */
+  word-wrap: break-word;
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 10px;
 }
 
-.chat-messages {
+.message.other {
+  background-color: #f1f1f1;
+  align-self: flex-start;
+  font-size: 12px;
+  max-width: 80%;
+}
+
+.message.mine {
+  background-color: #4ed9a5;
+  align-self: flex-end;
+  font-size: 12px;
+  max-width: 80%;
+}
+
+.message.enter {
+  align-self: center; /* ENTER 메시지를 가운데 정렬 */
+  background-color: transparent;
+  opacity: 50%;
+}
+.message-metadata-enter,
+.message-metadata-talk {
+  font-size: 10px;
+}
+
+.enter-message-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chat-search {
   padding: 10px;
-  flex: 1 0 auto;
-  overflow-y: scroll;
+  display: flex; /* Flexbox를 사용하여 검색 필드와 버튼을 나란히 배치 */
+  flex-direction: row;
+  gap: 10px; /* 입력 필드와 버튼 사이의 간격 */
+  height: 40px;
+  background-color: aquamarine;
+  align-items: center;
+}
+
+.chat-search input {
+  border: 1px solid #4ed9a5;
+  height: 30px;
+}
+
+.search-navigation {
+  align-items: center;
+}
+
+.search-next-button,
+.search-prev-button {
+  border: none;
+  font-size: 10px;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.chat-search-button {
+  border: none;
+  background-color: rgba(0, 0, 0, 0);
+  font-size: 10px;
+  cursor: pointer;
+  width: 50px;
+  height: 40px;
 }
 
 .chat-input {
-  padding: 10px;
   background-color: #f1f1f1;
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
-}
-
-.chat-input input {
-  padding: 10px;
-  width: 90%;
-  border: none;
-  border-radius: 5px;
+  height: 60px;
 }
