@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../../ Store/UserSlice";
+import { loginUser } from "../../Store/UserSlice";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -69,12 +69,8 @@ const LoginForm = () => {
     if (isValid) {
       let userCredentials = { email, password };
       dispatch(loginUser(userCredentials)).then((result) => {
-        if (result.payload) {
-          if (localStorage.getItem("Authorization")) {
-            navigate(`/dashboard/containers`);
-          } else {
-            navigate(`/`);
-          }
+        if (result.type === "user/loginUser/fulfilled") {
+          navigate(`/dashboard/containers`);
         }
       });
     }

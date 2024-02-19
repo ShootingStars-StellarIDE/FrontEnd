@@ -4,11 +4,16 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
-import store from "./ Store/store";
+import store from "./Store/store";
 import axios from "axios";
+import { setupErrorInterceptor_refresh } from "./apis/setupErrorInterceptor_refresh";
+import { setupErrorInterceptorAll } from "./apis/setupErrorInterceptorAll";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_PROXY;
 axios.defaults.withCredentials = true;
+
+setupErrorInterceptor_refresh();
+setupErrorInterceptorAll();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

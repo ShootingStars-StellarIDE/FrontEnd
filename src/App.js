@@ -4,8 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import ContainerListPage from "./pages/ContainerListPage";
 import ContainerEditPage from "./pages/ContainerEditPage";
-import ProfilePage from './pages/ProfilePage';
-
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -18,9 +17,11 @@ function App() {
             path={"/dashboard/containers"}
             element={<ContainerListPage />}
           />
-          <Route path={"/dashboard/profile"} element={<ProfilePage/>} />
-          <Route path={"/containers/1"} element={<ContainerEditPage />} />
-
+          <Route path={"/dashboard/profile"} element={<ProfilePage />} />
+          <Route
+            path={"/containers/:containerId"}
+            element={<ContainerEditPage />}
+          />
         </Routes>
       </Router>
     </div>

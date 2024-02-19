@@ -14,7 +14,7 @@ export const loginUser = createAsyncThunk(
           response.headers["authorization"];
         if (authHeader.startsWith("Bearer")) {
           // 'Bearer ' 접두어를 제거하고 accessToken만 추출합니다.
-          const accessToken = authHeader.split(" ")[1];
+          const accessToken = authHeader;
           // 로컬 스토리지에 accessToken 저장
           localStorage.setItem("Authorization", accessToken);
           return { accessToken };
