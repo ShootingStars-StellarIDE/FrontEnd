@@ -36,9 +36,17 @@ export const logout = () => api.post(`/api/auth/logout`);
 export const profile = () => api.get(`/api/user/profile`);
 
 //비밀번호 변경
-export const ChangePassword = (currentPassword, newPassword) =>
-  api.put(`/api/user/change-password`, {currentPassword, newPassword});
+export const ChangePassword = (password, newPassword) => {
+  const token = localStorage.getItem("Authorization");
+  return api.patch(`/api/auth/changePassword`, {password, newPassword}, {headers: {Authorization: token}});
+}
 
 //프로필 사진 변경
 export const ChangePic = () =>
   api.put(`/api/user/change-profile-image`);
+
+//회원정보 수정시 비밀번호 확인
+export const checkPassword = ( password ) => {
+  const token = localStorage.getItem("Authorization");
+  return api.post(`./api/auth/checkPassword`, {password}, {headers: {Authorization: token}});
+}

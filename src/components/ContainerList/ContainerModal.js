@@ -1,11 +1,8 @@
-// import React from "react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/ContainerModal.css";
 import javaIco from "../../assets/JAVA.svg";
 import pythonIco from "../../assets/python.svg";
-import springIco from "../../assets/spring.svg";
-import reactIco from "../../assets/react.svg";
 
 function ContainerModal({ isOpen, close }) {
   const [selectedLang, setSelectedLang] = useState(""); // 선택된 언어를 저장하는 상태 변수
@@ -44,8 +41,6 @@ function ContainerModal({ isOpen, close }) {
         <h3>컨테이너 타입</h3>
         <div className="lang-button-container">
           {langButton("JAVA", javaIco)}
-          {/* {langButton("Spring", springIco)}
-          {langButton("React", reactIco)} */}
           {langButton("PYTHON", pythonIco)}
         </div>
         <h3>프로젝트 이름</h3>

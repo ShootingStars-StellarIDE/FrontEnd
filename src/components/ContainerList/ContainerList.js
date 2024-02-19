@@ -66,7 +66,7 @@ function ContainerList() {
 
         {/* 검색창/정렬 */}
         <div className="searchbar-line">
-          <div class="search">
+          <div className="search">
             <input
               type="text"
               placeholder="검색어 입력"
@@ -98,9 +98,9 @@ function ContainerList() {
             <div className="conname-line">
               <div className="conname">{item.name}</div>
               <div className="esd-icons">
-                <img src={edteIcon} />
-                <img src={shareIcon} />
-                <img src={deleteIcon} />
+                <img src={edteIcon} alt="edit"/>
+                <img src={shareIcon} alt="share"/>
+                <img src={deleteIcon} alt="delete"/>
               </div>
             </div>
             <div className="idelang">{item.lang}</div>
