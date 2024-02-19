@@ -8,7 +8,6 @@ function SignUpPage() {
 
   //회원가입 요청
   const join = async (form) => {
-    console.log(form);
     let response;
 
     response = await auth.signup(form.email, form.nickname, form.password);
@@ -52,7 +51,6 @@ function SignUpPage() {
   };
 
   //----------------------------------------------------------------
-
   //코드 인증
   const CodeCheck = async (email, code) => {
     let response;

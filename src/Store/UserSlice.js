@@ -14,10 +14,10 @@ export const loginUser = createAsyncThunk(
           response.headers["authorization"];
         if (authHeader.startsWith("Bearer")) {
           // 'Bearer ' 접두어를 제거하고 accessToken만 추출합니다.
-          
+          const accessToken = authHeader;
           // 로컬 스토리지에 accessToken 저장
-          localStorage.setItem("Authorization", authHeader);
-          return { authHeader };
+          localStorage.setItem("Authorization", accessToken);
+          return { accessToken };
         }
       }
     } catch (error) {
@@ -62,8 +62,7 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload);
-        state.user.accessToken = action.payload; // accessToken을 상태에 저장합니다.
+        state.user.accessToken = action.payload.accessToken; // accessToken을 상태에 저장합니다.
         state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
