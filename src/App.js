@@ -17,11 +17,10 @@ function App() {
             path={"/dashboard/containers"}
             element={<ContainerListPage />}
           />
-          <Route path={"/dashboard/profile"} element={<ProfilePage />} />
+          <Route path={"/dashboard/profile"} element={<ProfilePage/>} />
           <Route
-            path={"/containers/:containerId"}
-            element={<ContainerEditPage />}
-          />
+            path={"/container/:containerId"}
+            element={<ContainerEditPage />} />
         </Routes>
       </Router>
     </div>
