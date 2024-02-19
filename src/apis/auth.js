@@ -42,8 +42,8 @@ export const profile = () => api.get(`/api/user/profile`);
 
 //비밀번호 변경
 export const ChangePassword = (currentPassword, newPassword) =>
-  api.put(`/api/user/change-password`);
+  api.put(`/api/user/change-password`, {currentPassword, newPassword});
 
 //프로필 사진 변경
-export const ChangePic = (currentPassword, newPassword) =>
+export const ChangePic = () =>
   api.put(`/api/user/change-profile-image`);
