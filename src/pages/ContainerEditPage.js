@@ -37,8 +37,6 @@ async function initYorkie() {
     
     return { client, doc };
 }
-import "../styles/ContainerEditPage.css";
-import axios from "axios";
 
 function ContainerEditPage() {
     const params = useParams();
