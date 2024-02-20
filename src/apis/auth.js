@@ -38,7 +38,10 @@ export const login = (email, password) => api.post(`/api/auth/login`);
 export const logout = () => api.post(`/api/auth/logout`);
 
 //회원정보 조회
-export const profile = () => api.get(`/api/user/profile`);
+export const profile = () => {
+  const token = localStorage.getItem("Authorization");
+  return api.get(`/api/user/profile`, {headers: {Authorization: token}});
+}
 
 //비밀번호 변경
 export const ChangePassword = (password, newPassword) => {
@@ -54,4 +57,10 @@ export const ChangePic = () =>
 export const checkPassword = ( password ) => {
   const token = localStorage.getItem("Authorization");
   return api.post(`./api/auth/checkPassword`, {password}, {headers: {Authorization: token}});
+}
+
+//컨테이너 리스트 조회
+export const containerSearch = () => {
+  const token = localStorage.getItem("Authorization");
+  return api.get(`/api/container/search`, {headers: {Authorization: token}});
 }

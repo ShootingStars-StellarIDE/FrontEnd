@@ -137,7 +137,7 @@ function ContainerEditPage() {
         </div>
         <div className="result">결과창</div>
       </div>
-      <ChatBubble containerId={params.containerId} />
+      {/* <ChatBubble containerId={params.containerId} /> */}
     </div>
   );
 }

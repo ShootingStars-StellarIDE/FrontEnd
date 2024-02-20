@@ -1,157 +1,171 @@
 .contents {
-    padding: 10px;
-    padding-left: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: top;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
+  padding: 10px;
+  padding-left: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: top;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }
 
-    .contents-header {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-        width: 100%;
-    }
+.contents-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+}
 
-        .usercon-display {
-            display: flex;
-            justify-content: flex-start;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            color: rgb(144, 144, 144);
-        }
+.usercon-display {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  color: rgb(144, 144, 144);
+}
 
-        .con-display {
-            justify-content: flex-start;
-            font-size: 3rem;
-            font-weight: bolder;
-        }
+.userNickname {
+  color: #4ed9a5;
+  font-weight: 600;
+}
 
-            .con-display p {
-                margin: 1rem 0rem;
-            }
+.con-display {
+  justify-content: flex-start;
+  font-size: 3rem;
+  font-weight: bolder;
+}
 
-        .searchbar-line {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-        }
+.con-display p {
+  margin: 1rem 0rem;
+}
 
-            .search {
-                position: relative;
-                width: 275px;
-            }
-            
-            .search input {
-                width: 100%;
-                border: 1px solid #bbb;
-                border-radius: 8px;
-                padding: 4px 12px;
-                font-size: 14px;
-            }
-            
-            .search img {
-                position : absolute;
-                width: 17px;
-                top: 10px;
-                right: -10px;
-                margin: 0;
-            }
+.searchbar-line {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
 
-            .searchbar-line select {
-                position: relative;
-                background-color: #e0e0e0;
-                border: 0px;
-                border-radius: 8px;
-                padding: 10px 12px;
-                font-size: 14px;
-                margin-right: 50px;
-            }
+.search {
+  position: relative;
+  width: 275px;
+}
 
-    .container-cards {
-        width: 100%;
-        /* height: 10rem; */
-        margin-top: 30px;
-        padding-bottom: 20px;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, 300px);
-        grid-auto-rows: 250px;
-        gap: 40px 50px;
-        /* overflow: auto; */
-    }
+.search input {
+  width: 100%;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-size: 14px;
+}
 
-        .container-cards > div:first-child {
-            background-color: #4ed9a5;
-            box-shadow: 5px 5px 5px rgb(192, 192, 192);
-            border-radius: 14px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 72px;
-            color: #d8d8d8;
-            cursor: pointer;
-        }
+.search img {
+  position: absolute;
+  width: 17px;
+  top: 10px;
+  right: -10px;
+  margin: 0;
+}
 
-        .container-cards .concards {
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 5px 5px 5px rgb(192, 192, 192);
-            border-radius: 14px;
-        }
+.searchbar-line select {
+  position: relative;
+  background-color: #e0e0e0;
+  border: 0px;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  margin-right: 50px;
+}
 
-            .concards .conname {
-                margin: 5px 0px;
-                font-size: 16px;
-                font-weight: bold;
-            }
+.container-cards {
+  width: 100%;
+  /* height: 10rem; */
+  margin-top: 30px;
+  padding-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 300px);
+  grid-auto-rows: 270px;
+  gap: 40px 50px;
+  /* overflow: auto; */
+}
 
-            .conname-line {
-                display: flex;
-                justify-content: space-between;
-            }
+.container-cards>div:first-child {
+  background-color: #4ed9a5;
+  box-shadow: 5px 5px 5px rgb(192, 192, 192);
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 72px;
+  color: #d8d8d8;
+  cursor: pointer;
+}
 
-            .esd-icons {
-                display: flex;
-                justify-content: end;
-            }
+.concards {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 5px 5px 5px rgb(192, 192, 192);
+  border-radius: 14px;
+}
 
-            .esd-icons img {
-                width: 14px;
-                margin: 0px 3px;
-                cursor: pointer;
-            }
+.conname {
+  margin: 5px 0px;
+  font-size: 16px;
+  font-weight: bold;
+}
 
-            .concards .idelang {
-                margin: 5px 0px;
-                font-size: 14px;
-                color: #4ed9a5;
-                font-weight: bold;
-            }
+.conname-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
 
-            .concards .condesc {
-                flex-grow: 1;
-                margin: 10px 0px;
-                height: 90px;
-                color: #5c5c5c;
-            }
+.esd-icons {
+  display: flex;
+  justify-content: end;
+}
 
-            .concards .idestart {
-                margin: 0px 30px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 40px;
-                cursor: pointer;
-                background-color: #4ed9a5;
-                border-radius: 8px;
-                font-weight: bold;
-            }
-    
+.esd-icons img {
+  width: 14px;
+  margin: 0px 3px;
+  cursor: pointer;
+}
+
+.typeline, .nicknameline {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.idelang {
+  color: #4ed9a5;
+  font-weight: bold;
+}
+
+.editUserUuid {
+  font-weight: bold;
+}
+
+.condesc {
+  flex-grow: 1;
+  margin: 5px 0px;
+  height: auto;
+  color: #5c5c5c;
+}
+
+.idestart {
+  margin: 0px 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  cursor: pointer;
+  background-color: #4ed9a5;
+  border-radius: 8px;
+  font-weight: bold;
+}

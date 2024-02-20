@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import * as auth from "../../apis/auth";
 import selectpic from "../../assets/selectpic.svg";
 import "../../styles/UserProfile.css"
-import { setAccessToken } from "../../ Store/UserSlice";
+// import { setAccessToken } from "../../Store/UserSlice";
 
 function UserProfile() {
   const navigate = useNavigate();
@@ -19,21 +19,61 @@ function UserProfile() {
   );
   const [renewPasswordError, setRenewPasswordError] = useState(" ");
 
+  const [userEmail, setUserEmail] = useState("");
   const [userNickname, setUserNickname] = useState("");
+  const [userProfileImgUrl, setUserProfileImgUrl] = useState("");
+  const [userOwnedContainers, setUserOwnedContainers] = useState("");
+  const [userSharedContainers, setUserSharedContainers] = useState("");
 
   //----------------------------------------------------------------페이지 로드시 회원정보 표시
-  // useEffect(() => {
-  //   // API 요청 함수
-  //   const editInfoNicknameApi = async () => {
-  //   let response = await auth.checkPassword(form.password);
-  //     let response = await auth.profile();
-  //     const result = await response.json();
-  //     setUserNickname(result); // 받아온 데이터를 상태에 저장
-  //   };
-
-  //   editInfoNicknameApi(); // 컴포넌트가 마운트될 때 API 요청 실행
-  // }, []);
-
+  
+  useEffect(() => {
+    // API 요청 함수
+    const userInfoApi = async () => {
+      try {
+        let response = await auth.profile();
+        console.log(response);
+        if (response.status == 200) {
+          setUserEmail(response.data.email);
+          setUserNickname(response.data.nickname);
+          setUserProfileImgUrl(response.data.profileImgUrl);
+          setUserOwnedContainers(response.data.ownedContainers);
+          setUserSharedContainers(response.data.sharedContainers);
+        }
+      } catch (error) {
+        console.log(error);
+        if (error.response.data.code === 100) {
+          // 인증에 실패하였습니다.
+          console.error(error.response.data.description);
+        }
+        else if (error.response.data.code === 101) {
+          // 잘못된 접근입니다.
+          console.error(error.response.data.description);
+        }
+        else if (error.response.data.code === 102) {
+          // 잘못된 Access Token 입니다.
+          console.error(error.response.data.description);
+        }
+        else if (error.response.data.code === 103) {
+          // 만료된 Access Token 입니다.(해당 에러 발생시 Refresh 요청)
+          console.error(error.response.data.description);
+        }
+        else if (error.response.data.code === 104) {
+          // 지원하지 않는 Access Token 입니다.
+          console.error(error.response.data.description);
+        }
+        else if (error.response.data.code === 105) {
+          // Claim이 빈 Access Token 입니다.
+          console.error(error.response.data.description);
+        }
+        else if (error.response.data.code === 1203) {
+          // 존재하지 않는 사용자입니다.
+          console.error(error.response.data.description);
+        }
+      }
+    };
+    userInfoApi(); // 컴포넌트가 마운트될 때 API 요청 실행
+  }, []);
 
   //----------------------------------------------------------------비밀번호 관련
   const onChangePassword = (event) => {
@@ -268,7 +308,7 @@ function UserProfile() {
     <div className="contents">
       <div className="contents-header">
         <div className="user-profile-display">
-          <p>별똥별</p>
+          <p className="userNickname">{userNickname}</p>
           <p>님 / 프로필</p>
         </div>
       </div>
@@ -286,16 +326,19 @@ function UserProfile() {
       > 
         <div className="profile-card">
           <div className="profile-image-placeholder">
+            {/* 프로필 사진 */}
+              {userProfileImgUrl && <img src={userProfileImgUrl} alt="userimg" />}
+            {/* 사진 변경 뱃지 */}
             <div className="notification-badge">
-              <img src={selectpic} alt="selectpic"/>
+              <img src={selectpic} alt="selectpic" className="pic-edit-badge"/>
             </div>
           </div>
 
           <div className="profile-info">
             <p className="title">닉네임</p>
-            {/* <p className="info">{userNickname}</p> */}
+            <p className="info">{userNickname}</p>
             <p className="title">계정</p>
-            <p className="info">Shootingstar@groom.co.kr</p>
+            <p className="info">{userEmail}</p>
             <p className="title">비밀번호 수정</p>
 
             <input
@@ -359,10 +402,11 @@ function UserProfile() {
             </div>
 
             <p className="title">내 컨테이너 개수</p>
-            <p className="info">3개</p>
+            <p className="info">{userOwnedContainers}개</p>
             <p className="title">공유 컨테이너 개수</p>
-            <p className="info">7개</p>
+            <p className="info">{userSharedContainers}개</p>
             <button className="edit-button" type="submit">회원정보 수정</button>
+            <p className="cancel-membership">회원 탈퇴</p>
           </div>
         </div>
       </form>

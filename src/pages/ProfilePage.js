@@ -23,9 +23,9 @@ function ProfilePage() {
                 
             </UserProfile>
 
-            <ChatBubble>
+            {/* <ChatBubble>
                 
-            </ChatBubble>
+            </ChatBubble> */}
         </div>
     );
 }
