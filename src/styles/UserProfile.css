@@ -1,150 +1,182 @@
 .main-container {
-    display: flex;
-    flex-direction: row;
-    min-width: 100%;
-    max-width: 100vw;
+  display: flex;
+  flex-direction: row;
+  min-width: 100%;
+  max-width: 100vw;
 
-    background-color: #ececec;
-    /* min-height: 100%; */
-    height: 100vh;
+  background-color: #ececec;
+  /* min-height: 100%; */
+  height: 100vh;
 
-    align-items: flex-start;
-    justify-content: flex-start;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .contents {
-    padding: 10px;
-    padding-left: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    /* position: absolute; */
+  padding: 10px;
+  padding-left: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  /* position: absolute; */
 }
 
 .contents-header {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .user-profile-display {
-    display: flex;
-    justify-content: flex-start;
-    margin-bottom: 20px;
-    font-size: 1.2rem;
-    color: rgb(144, 144, 144);
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  color: rgb(144, 144, 144);
+}
+
+.user-profile-display .userNickname {
+  color: #4ed9a5;
+  font-weight: 600;
 }
 
 .profile-card {
-    width: 500px;
-    border: 1px solid #e1e1e1;
-    border-radius: 8px;
-    padding: 20px;
-    text-align: center;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 500px;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  position: relative;
 }
 
 .profile-image-placeholder {
-    height: 96px;
-    width: 96px;
-    background-color: #f0f0f0;
-    border-radius: 30%;
-    margin: 20px auto;
-    position: relative; /* 알림 마크의 위치를 기준으로 사용 */
-    display: inline-block; /* 필요에 따라 조정 */
+  height: 96px;
+  width: 96px;
+  background-color: #f0f0f0;
+  border-radius: 30%;
+  margin-top: 20px;
+  position: relative;
+  /* 알림 마크의 위치를 기준으로 사용 */
+  display: inline-block;
+  /* 필요에 따라 조정 */
+}
+
+.profile-image-placeholder .userimg {
+  height: 96px;
+  width: 96px;
 }
 
 .notification-badge {
-    position: absolute;
-    bottom: 0px;
-    right: 0px; 
-    background-color: gray; 
-    color: white; 
-    border-radius: 50%; 
-    padding: 5px; 
-    font-size: 12px; 
-    display: flex;
-    justify-content: center;
-    cursor: pointer;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  background-color: gray;
+  color: white;
+  border-radius: 50%;
+  padding: 5px;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
 }
 
-.notification-badge img {
-    width: 16px;
+.notification-badge .pic-edit-badge {
+  width: 16px;
 }
 
 .profile-name {
-    margin: 0;
-    color: #4ed9a5;
-    font-size: 24px;
+  margin: 0;
+  color: #4ed9a5;
+  font-size: 24px;
 }
 
 .profile-title {
-    color: #666;
-    font-size: 18px;
+  color: #666;
+  font-size: 18px;
 }
 
 .title {
-    color: #666;
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 40px;
-    margin-bottom: 10px;
+  color: #666;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 40px;
+  margin-bottom: 10px;
 }
 
 .info {
-    color: #666;
-    font-size: 16px;
-    margin: 0px;
+  color: #666;
+  font-size: 16px;
+  margin: 0px;
 }
 
 .password-input {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
-.password-input, .new-password-input {
-    height: 30px;
-    border: none;
-    border-bottom: 1px solid #4ed9a5;
-    outline: none;
-    width: 250px;
-    text-align: center;
+.password-input {
+  margin-top: 10px;
+  height: 30px;
+  border: none;
+  border-bottom: 1px solid #4ed9a5;
+  outline: none;
+  width: 250px;
+  text-align: center;
+}
+
+.new-password-input {
+  margin-top: 10px;
+  height: 30px;
+  border: none;
+  border-bottom: 1px solid #4ed9a5;
+  outline: none;
+  width: 250px;
+  text-align: center;
 }
 
 .edit-button {
-    height: 50px;
-    width: 200px;
-    border-radius: 50px;
-    border: none;
-    background-color: #4ed9a5;
-    color: white;
-    font-size: 18px;
-    cursor: pointer;
-    margin-top: 50px;
+  height: 50px;
+  width: 200px;
+  border-radius: 50px;
+  border: none;
+  background-color: #4ed9a5;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  margin-top: 50px;
+}
+
+.cancel-membership {
+  position: absolute;
+  bottom: 5px;
+  right: 25px;
+  cursor: pointer;
 }
 
 .spacebox {
-    height: 30px;
+  height: 20px;
 }
 
-.Signup-Form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    transform: translate(0%, 0%);
+.contents .Signup-Form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transform: translate(0%, 0%);
 }
 
 .is-error {
-    color: red;
-  }
-  
-  .is-valid {
-    color: #4ed9a5;
-    visibility: visible;
-  }
+  color: red;
+}
+
+.is-valid {
+  color: #4ed9a5;
+  visibility: visible;
+}

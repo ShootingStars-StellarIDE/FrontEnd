@@ -43,23 +43,53 @@ export const login = (email, password) => api.post(`/api/auth/login`);
 export const logout = () => api.post(`/api/auth/logout`);
 
 //회원정보 조회
-export const profile = () => api.get(`/api/user/profile`);
+export const profile = () => {
+  const token = localStorage.getItem("Authorization");
+  return api.get(`/api/user/profile`, { headers: { Authorization: token } });
+};
 
 //비밀번호 변경
-export const ChangePassword = (currentPassword, newPassword) =>
-  api.put(`/api/user/change-password`, { currentPassword, newPassword });
+export const ChangePassword = (password, newPassword) => {
+  const token = localStorage.getItem("Authorization");
+  return api.patch(
+    `/api/auth/changePassword`,
+    { password, newPassword },
+    { headers: { Authorization: token } }
+  );
+};
 
 //프로필 사진 변경
 export const ChangePic = () => api.put(`/api/user/change-profile-image`);
 
-//비밀번호 확인
+//회원정보 수정시 비밀번호 확인
 export const checkPassword = (password) => {
   const token = localStorage.getItem("Authorization");
   return api.post(
-    `/api/auth/checkPassword`,
+    `./api/auth/checkPassword`,
     { password },
-    {
-      headers: { Authorization: token },
-    }
+    { headers: { Authorization: token } }
+  );
+};
+
+//컨테이너 리스트 조회
+export const containerSearch = () => {
+  const token = localStorage.getItem("Authorization");
+  return api.get(`/api/container/search`, {
+    headers: { Authorization: token },
+  });
+};
+
+//컨테이너 생성
+export const containerCreate = (
+  containerType,
+  containerName,
+  containerDescription
+) => {
+  console.log(containerType);
+  const token = localStorage.getItem("Authorization");
+  return api.post(
+    `/api/container/create`,
+    { containerType, containerName, containerDescription },
+    { headers: { Authorization: token } }
   );
 };
