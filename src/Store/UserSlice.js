@@ -21,6 +21,7 @@ export const loginUser = createAsyncThunk(
         }
       }
     } catch (error) {
+      console.log(error);
       if (error.response.data) {
         switch (error.response.data.code) {
           case 1001:
@@ -62,7 +63,7 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user.accessToken = action.payload.accessToken; // accessToken을 상태에 저장합니다.
+        state.user.accessToken = action.payload; // accessToken을 상태에 저장합니다.
         state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {

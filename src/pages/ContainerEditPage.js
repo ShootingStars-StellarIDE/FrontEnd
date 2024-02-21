@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import FolderTree from "react-folder-tree";
+
 import Editor from "@monaco-editor/react";
 import ChatBubble from "../components/ContainerList/ChatBubble";
 import { useParams } from "react-router-dom";
@@ -30,18 +30,6 @@ function ContainerEditPage() {
   };
 
   // 파일 트리
-  const BasicTree = () => {
-    const onTreeStateChange = (state, event) => console.log(state, event);
-    return (
-      <FolderTree
-        data={treeData}
-        showCheckbox={false}
-        onChange={onTreeStateChange}
-        readOnly
-        onNameClick={onNameClick}
-      />
-    );
-  };
 
   const [editors, setEditors] = useState([]);
 
@@ -117,9 +105,7 @@ function ContainerEditPage() {
     <div className="edit-page">
       <div className="tree-container">
         <div className="tree-bar">트리바</div>
-        <div className="tree-main">
-          <BasicTree />
-        </div>
+        <div className="tree-main"></div>
       </div>
       <div className="editor-container">
         <div className="editor-bar">
