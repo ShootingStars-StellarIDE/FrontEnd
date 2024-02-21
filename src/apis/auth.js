@@ -16,7 +16,7 @@ export const emailCheck = (email) =>
 export const nickNameCheck = (nickname) =>
   api.post(`/api/check-duplicate/nickname`, { nickname });
 
-//Access Token 재발급
+//Access Token 재발급(사용)
 export const authRefresh = () => {
   const token = localStorage.getItem("Authorization");
   return api.post(`/api/auth/refresh`, null, {
@@ -28,7 +28,7 @@ export const authRefresh = () => {
 export const signup = (email, nickname, password) =>
   api.post("/api/auth/signup", { email, nickname, password });
 
-//회원탈퇴
+//회원탈퇴(사용)
 export const deleteUser = () => {
   const token = localStorage.getItem("Authorization");
   return api.delete(`/api/auth/delete/user`, {
@@ -37,10 +37,13 @@ export const deleteUser = () => {
 };
 
 //로그인
-export const login = (email, password) => api.post(`/api/auth/login`);
+// export const login = (email, password) => api.post(`/api/auth/login`);
 
-//로그아웃
-export const logout = () => api.post(`/api/auth/logout`);
+//로그아웃(사용)
+export const logout = () => {
+  const token = localStorage.getItem("Authorization");
+  return api.delete(`/api/auth/logout`, { headers: { Authorization: token } });
+};
 
 //회원정보 조회
 export const profile = () => {
@@ -48,7 +51,7 @@ export const profile = () => {
   return api.get(`/api/user/profile`, { headers: { Authorization: token } });
 };
 
-//비밀번호 변경
+//비밀번호 변경(사용)
 export const ChangePassword = (password, newPassword) => {
   const token = localStorage.getItem("Authorization");
   return api.patch(
@@ -61,7 +64,7 @@ export const ChangePassword = (password, newPassword) => {
 //프로필 사진 변경
 export const ChangePic = () => api.put(`/api/user/change-profile-image`);
 
-//회원정보 수정시 비밀번호 확인
+//회원정보 수정시 비밀번호 확인(사용)
 export const checkPassword = (password) => {
   const token = localStorage.getItem("Authorization");
   return api.post(
@@ -91,5 +94,39 @@ export const containerCreate = (
     `/api/container/create`,
     { containerType, containerName, containerDescription },
     { headers: { Authorization: token } }
+  );
+};
+//컨테이너 삭제
+export const containerDelete = (containerId) => {
+  const token = localStorage.getItem("Authorization");
+  return api.delete(
+    `/api/container/delete/${containerId}`,
+
+    { headers: { Authorization: token } }
+  );
+};
+//컨테이너 공유
+export const containerShare = (containerId, userNickname) => {
+  const token = localStorage.getItem("Authorization");
+  return api.post(
+    `/api/container/share`,
+    { containerId, userNickname },
+    {
+      headers: { Authorization: token },
+    }
+  );
+};
+//컨테이너 수정
+export const containerEdit = (containerId, containerDescription) => {
+  const token = localStorage.getItem("Authorization");
+  return api.patch(
+    `/api/container/edit`,
+    {
+      containerId,
+      containerDescription,
+    },
+    {
+      headers: { Authorization: token },
+    }
   );
 };

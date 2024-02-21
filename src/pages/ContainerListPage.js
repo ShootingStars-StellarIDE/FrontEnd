@@ -13,7 +13,6 @@ import ContainerList from "../components/ContainerList/ContainerList";
 import ChatBubbleGlobal from "../components/ContainerList/ChatBubbleGlobal";
 
 function ContainerListPage() {
-
   const [isModalOpen, setModalOpen] = useState(false);
 
   const toggleModal = () => {
@@ -40,28 +39,22 @@ function ContainerListPage() {
         if (error.response.data.code === 100) {
           // 인증에 실패하였습니다.
           console.error(error.response.data.description);
-        }
-        else if (error.response.data.code === 101) {
+        } else if (error.response.data.code === 101) {
           // 잘못된 접근입니다.
           console.error(error.response.data.description);
-        }
-        else if (error.response.data.code === 102) {
+        } else if (error.response.data.code === 102) {
           // 잘못된 Access Token 입니다.
           console.error(error.response.data.description);
-        }
-        else if (error.response.data.code === 103) {
+        } else if (error.response.data.code === 103) {
           // 만료된 Access Token 입니다.(해당 에러 발생시 Refresh 요청)
           console.error(error.response.data.description);
-        }
-        else if (error.response.data.code === 104) {
+        } else if (error.response.data.code === 104) {
           // 지원하지 않는 Access Token 입니다.
           console.error(error.response.data.description);
-        }
-        else if (error.response.data.code === 105) {
+        } else if (error.response.data.code === 105) {
           // Claim이 빈 Access Token 입니다.
           console.error(error.response.data.description);
-        }
-        else if (error.response.data.code === 1203) {
+        } else if (error.response.data.code === 1203) {
           // 존재하지 않는 사용자입니다.
           console.error(error.response.data.description);
         }
@@ -72,14 +65,14 @@ function ContainerListPage() {
 
   return (
     <div className="main-container">
-      <Sidebar 
+      <Sidebar
         nickname={userNickname}
-        profileimgurl = {userProfileImgUrl}
+        profileimgurl={userProfileImgUrl}
       ></Sidebar>
 
       <ContainerList nickname={userNickname}></ContainerList>
 
-      <ChatBubbleGlobal nickName="태균이" />
+      <ChatBubbleGlobal nickName={userNickname} />
 
       {/* <ContainerModal isOpen={isModalOpen} onClose={toggleModal} /> */}
     </div>

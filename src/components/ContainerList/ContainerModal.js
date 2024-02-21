@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+
 import "../../styles/ContainerModal.css";
 import javaIco from "../../assets/JAVA.svg";
 import pythonIco from "../../assets/python.svg";
 import * as auth from "../../apis/auth";
 
-function ContainerModal({ isOpen, close }) {
-  const navigate = useNavigate();
-
+function ContainerModal({ isOpen, close, addOwner }) {
   // 컨테이너 정보
   const [containerType, setContainerType] = useState("");
   const [containerName, setContainerName] = useState("");
@@ -19,12 +17,12 @@ function ContainerModal({ isOpen, close }) {
   const onChangeContainerName = (event) => {
     console.log(event.target.value);
     setContainerName(event.target.value);
-  }
+  };
 
   //----------------------------------------------------------------컨테이너 내용
   const onChangeContainerDescription = (event) => {
     setContainerDescription(event.target.value);
-  }
+  };
 
   //----------------------------------------------------------------컨테이너 언어
   // 클릭 이벤트 핸들러
@@ -34,16 +32,15 @@ function ContainerModal({ isOpen, close }) {
 
   // 컨테이너 생성요청
   const createContainerApi = async (type, name, desc) => {
-    let response = await auth.containerCreate(
-      type,
-      name,
-      desc
-    );
-
+    let response = await auth.containerCreate(type, name, desc);
+    if (response.status === 200) {
+      addOwner(response.data);
+      close();
+    }
     console.log(response);
 
     return response;
-  }
+  };
 
   // 언어버튼
   const langButton = (type, img) => {
@@ -54,8 +51,8 @@ function ContainerModal({ isOpen, close }) {
         onClick={() => handleLangButtonClick(type)}
         className={`${type} ${containerType === type ? "selected" : ""}`}
       />
-    )
-  }
+    );
+  };
 
   const createcontainer = (e) => {
     e.preventDefault();
@@ -70,27 +67,26 @@ function ContainerModal({ isOpen, close }) {
     let isValid = true;
 
     // type 검사
-    if(containerType == null) {
+    if (containerType == null) {
       alert("타입을 선택해 주세요.");
       isValid = false;
     }
-    if(containerName == null) {
+    if (containerName == null) {
       alert("이름을 입력해 주세요.");
       isValid = false;
     }
-    if(containerDescription == null) {
+    if (containerDescription == null) {
       alert("설명을 입력해 주세요.");
       isValid = false;
     }
 
-    if(!isValid) {
+    if (!isValid) {
       return;
     } else {
       console.log(type, name, desc);
       createContainerApi(type, name, desc);
     }
-
-  }
+  };
 
   return (
     <form
@@ -101,24 +97,22 @@ function ContainerModal({ isOpen, close }) {
         if (e.key === "Enter") {
           e.preventDefault();
         }
-      }
-      }
-    > 
+      }}
+    >
       <div className="modal-backdrop">
         <div className="modal">
           <h3>컨테이너 타입</h3>
           <div className="lang-button-container">
-              {langButton("JAVA", javaIco)}
-              {langButton("PYTHON", pythonIco)}
+            {langButton("JAVA", javaIco)}
+            {langButton("PYTHON", pythonIco)}
           </div>
           <h3>프로젝트 이름</h3>
-          <input 
-            type="text" 
-            placeholder="프로젝트 이름을 입력하세요" 
+          <input
+            type="text"
+            placeholder="프로젝트 이름을 입력하세요"
             name="containerName"
             value={containerName}
             onChange={onChangeContainerName}
-
           />
           <h3>프로젝트 설명</h3>
           <textarea
@@ -127,7 +121,6 @@ function ContainerModal({ isOpen, close }) {
             name="containerDescription"
             value={containerDescription}
             onChange={onChangeContainerDescription}
-
           ></textarea>
 
           <div className="buttons">

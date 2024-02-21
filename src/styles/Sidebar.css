@@ -71,7 +71,6 @@
 
 .dmlist {
   padding: 20px 10px;
-
 }
 
 .dmlist div {
@@ -114,9 +113,17 @@ summary::before {
   border-right: 0.45em solid rgb(40, 40, 40);
   top: 0.3em;
   right: 0;
-  transition: .1s transform;
+  transition: 0.1s transform;
 }
 
 details[open] summary:before {
   transform: rotateZ(-90deg);
+}
+
+.logout {
+  position: absolute;
+  bottom: 10px;
+  left: 50px;
+  cursor: pointer;
+  color: rgb(40, 40, 40);
 }

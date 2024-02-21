@@ -5,7 +5,7 @@ import SignUpPage from "./pages/SignUpPage";
 import ContainerListPage from "./pages/ContainerListPage";
 import ContainerEditPage from "./pages/ContainerEditPage";
 import ProfilePage from "./pages/ProfilePage";
-import UserDelete from "./components/UserProfile/UserDelete";
+import UserDelete from "./components/UserProfile/UserDeleteModal";
 
 function App() {
   return (
@@ -18,7 +18,6 @@ function App() {
             path={"/dashboard/containers"}
             element={<ContainerListPage />}
           />
-          <Route path={"/profile/delete"} element={<UserDelete />} />
           <Route path={"/dashboard/profile"} element={<ProfilePage />} />
           <Route
             path={"/container/:containerId"}
