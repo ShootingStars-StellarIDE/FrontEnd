@@ -11,6 +11,7 @@ export const setupErrorInterceptorAll = () => {
     "0107",
     "0108",
     "0109",
+    "1201",
   ];
 
   axios.interceptors.response.use(
@@ -75,6 +76,13 @@ export const setupErrorInterceptorAll = () => {
 
         //Claim이 빈 RefreshToken 입니다.
         else if (error.response.data.code == "0109") {
+          console.error(error.response.data.description);
+          window.location = "/";
+          localStorage.removeItem("Authorization");
+        }
+
+        //존재하지 않는 사용자입니다.
+        else if (error.response.data.code == "1201") {
           console.error(error.response.data.description);
           window.location = "/";
           localStorage.removeItem("Authorization");

@@ -79,7 +79,7 @@ function ContainerListPage() {
 
       <ContainerList nickname={userNickname}></ContainerList>
 
-      {/* <ChatBubbleGlobal /> */}
+      <ChatBubbleGlobal nickName="태균이" />
 
       {/* <ContainerModal isOpen={isModalOpen} onClose={toggleModal} /> */}
     </div>
