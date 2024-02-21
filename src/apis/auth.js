@@ -64,3 +64,10 @@ export const containerSearch = () => {
   const token = localStorage.getItem("Authorization");
   return api.get(`/api/container/search`, {headers: {Authorization: token}});
 }
+
+//컨테이너 생성
+export const containerCreate = (containerType, containerName, containerDescription) => {
+  console.log(containerType);
+  const token = localStorage.getItem("Authorization");
+  return api.post(`/api/container/create`, {containerType, containerName, containerDescription}, {headers: {Authorization: token}});
+}

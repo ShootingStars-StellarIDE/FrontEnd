@@ -5,7 +5,13 @@ import selectpic from "../../assets/selectpic.svg";
 import "../../styles/UserProfile.css"
 // import { setAccessToken } from "../../Store/UserSlice";
 
-function UserProfile() {
+function UserProfile(
+    {email, 
+    nickname, 
+    profileimgurl, 
+    ownedcontainers, 
+    sharedcontainers }
+  ) {
   const navigate = useNavigate();
   
   //----------------------------------------------------------------state
@@ -18,62 +24,6 @@ function UserProfile() {
     "(영어,특수문자,숫자)를 포함한 8~16자를 입력하세요(허용 특수문자:@$!%*#?&)"
   );
   const [renewPasswordError, setRenewPasswordError] = useState(" ");
-
-  const [userEmail, setUserEmail] = useState("");
-  const [userNickname, setUserNickname] = useState("");
-  const [userProfileImgUrl, setUserProfileImgUrl] = useState("");
-  const [userOwnedContainers, setUserOwnedContainers] = useState("");
-  const [userSharedContainers, setUserSharedContainers] = useState("");
-
-  //----------------------------------------------------------------페이지 로드시 회원정보 표시
-  
-  useEffect(() => {
-    // API 요청 함수
-    const userInfoApi = async () => {
-      try {
-        let response = await auth.profile();
-        console.log(response);
-        if (response.status == 200) {
-          setUserEmail(response.data.email);
-          setUserNickname(response.data.nickname);
-          setUserProfileImgUrl(response.data.profileImgUrl);
-          setUserOwnedContainers(response.data.ownedContainers);
-          setUserSharedContainers(response.data.sharedContainers);
-        }
-      } catch (error) {
-        console.log(error);
-        if (error.response.data.code === 100) {
-          // 인증에 실패하였습니다.
-          console.error(error.response.data.description);
-        }
-        else if (error.response.data.code === 101) {
-          // 잘못된 접근입니다.
-          console.error(error.response.data.description);
-        }
-        else if (error.response.data.code === 102) {
-          // 잘못된 Access Token 입니다.
-          console.error(error.response.data.description);
-        }
-        else if (error.response.data.code === 103) {
-          // 만료된 Access Token 입니다.(해당 에러 발생시 Refresh 요청)
-          console.error(error.response.data.description);
-        }
-        else if (error.response.data.code === 104) {
-          // 지원하지 않는 Access Token 입니다.
-          console.error(error.response.data.description);
-        }
-        else if (error.response.data.code === 105) {
-          // Claim이 빈 Access Token 입니다.
-          console.error(error.response.data.description);
-        }
-        else if (error.response.data.code === 1203) {
-          // 존재하지 않는 사용자입니다.
-          console.error(error.response.data.description);
-        }
-      }
-    };
-    userInfoApi(); // 컴포넌트가 마운트될 때 API 요청 실행
-  }, []);
 
   //----------------------------------------------------------------비밀번호 관련
   const onChangePassword = (event) => {
@@ -170,25 +120,6 @@ function UserProfile() {
   }
 
   //----------------------------------------------------------------회원정보 수정 요청
-  // 더미 데이터로 테스트하기(아래 코드 지우고 실행)
-  // const dummydata = { currentPassword: "qqq111Q!" }
-  // const editInfoApi = async (form) => {
-  //   console.log(form);
-  //   console.log(dummydata.currentPassword);
-
-  //   if (form.password !== currentPassword) {
-  //     alert("현재 비밀번호가 일치하지 않습니다.");
-  //     return;
-  //   } 
-    
-  //   if (form.newpassword !== form.password && form.newpassword === renewPassword) {
-  //     alert("회원정보가 변경되었습니다.");
-  //     navigate("/dashboard/containers");
-  //   } else {
-  //     alert("새 비밀번호가 요구사항에 맞지 않거나 현재 비밀번호와 동일합니다.");
-  //   }
-  // }
-
   const editInfoApi = async (form) => {
   
     let response = await auth.checkPassword(form.password);
@@ -200,7 +131,7 @@ function UserProfile() {
         try {
           if (editInfoRequest.status == 200) { // 비밀번호 변경이 완료됐다면
             alert("회원정보가 변경되었습니다.");
-            localStorage.removeItem("Authorization");
+            localStorage.removeItem("Authorization"); // access token 삭제(로그아웃)
             navigate("/");
           }
         } catch (error) { 
@@ -308,7 +239,7 @@ function UserProfile() {
     <div className="contents">
       <div className="contents-header">
         <div className="user-profile-display">
-          <p className="userNickname">{userNickname}</p>
+          <p className="userNickname">{nickname}</p>
           <p>님 / 프로필</p>
         </div>
       </div>
@@ -327,7 +258,7 @@ function UserProfile() {
         <div className="profile-card">
           <div className="profile-image-placeholder">
             {/* 프로필 사진 */}
-              {userProfileImgUrl && <img src={userProfileImgUrl} alt="userimg" />}
+              {profileimgurl && <img src={profileimgurl} alt="userimg" className="userimg"/>}
             {/* 사진 변경 뱃지 */}
             <div className="notification-badge">
               <img src={selectpic} alt="selectpic" className="pic-edit-badge"/>
@@ -336,9 +267,9 @@ function UserProfile() {
 
           <div className="profile-info">
             <p className="title">닉네임</p>
-            <p className="info">{userNickname}</p>
+            <p className="info">{nickname}</p>
             <p className="title">계정</p>
-            <p className="info">{userEmail}</p>
+            <p className="info">{email}</p>
             <p className="title">비밀번호 수정</p>
 
             <input
@@ -402,9 +333,9 @@ function UserProfile() {
             </div>
 
             <p className="title">내 컨테이너 개수</p>
-            <p className="info">{userOwnedContainers}개</p>
+            <p className="info">{ownedcontainers}개</p>
             <p className="title">공유 컨테이너 개수</p>
-            <p className="info">{userSharedContainers}개</p>
+            <p className="info">{sharedcontainers}개</p>
             <button className="edit-button" type="submit">회원정보 수정</button>
             <p className="cancel-membership">회원 탈퇴</p>
           </div>

@@ -69,6 +69,11 @@
   /* 필요에 따라 조정 */
 }
 
+.profile-image-placeholder .userimg {
+  height: 96px;
+  width: 96px;
+}
+
 .notification-badge {
   position: absolute;
   bottom: 0px;

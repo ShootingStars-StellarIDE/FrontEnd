@@ -25,9 +25,13 @@
 
 .pic {
   cursor: pointer;
+  background-color: #f0f0f0;
+  border-radius: 30%;
 }
 
 .pic img {
+  width: 96px;
+  height: 96px;
   border-radius: 30%;
 }
 

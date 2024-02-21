@@ -50,7 +50,9 @@
 
 .search {
   position: relative;
-  width: 275px;
+  width: 30%;
+  max-width: 275px;
+  margin-right: 26px;
 }
 
 .search input {
@@ -69,6 +71,39 @@
   margin: 0;
 }
 
+.own-shared-containers {
+  display: flex;
+  flex-direction: row;
+  flex: 1 0 auto;
+  justify-content: start;
+}
+
+.own-containers, .shared-containers {
+  padding: 5px 10px;
+  min-width: 102px;
+  background-color: white;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.own-containers {
+  margin: 0px 10px;
+}
+
+.shared-containers {
+  margin-right: 10px;
+}
+
+.own-shared-containers p {
+  margin: 0px;
+}
+
 .searchbar-line select {
   position: relative;
   background-color: #e0e0e0;
@@ -79,16 +114,18 @@
   margin-right: 50px;
 }
 
+.contents h1 {
+  align-self: flex-start;
+}
+
 .container-cards {
   width: 100%;
-  /* height: 10rem; */
   margin-top: 30px;
   padding-bottom: 20px;
   display: grid;
   grid-template-columns: repeat(auto-fill, 300px);
   grid-auto-rows: 270px;
   gap: 40px 50px;
-  /* overflow: auto; */
 }
 
 .container-cards>div:first-child {
@@ -101,6 +138,16 @@
   font-size: 72px;
   color: #d8d8d8;
   cursor: pointer;
+}
+
+.container-cards-2 {
+  width: 100%;
+  margin-top: 30px;
+  padding-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 300px);
+  grid-auto-rows: 270px;
+  gap: 40px 50px;
 }
 
 .concards {
@@ -169,3 +216,4 @@
   border-radius: 8px;
   font-weight: bold;
 }
+
