@@ -29,7 +29,12 @@ export const signup = (email, nickname, password) =>
   api.post("/api/auth/signup", { email, nickname, password });
 
 //회원탈퇴
-export const deleteUser = () => api.delete(`/api/auth/delete/user`);
+export const deleteUser = () => {
+  const token = localStorage.getItem("Authorization");
+  return api.delete(`/api/auth/delete/user`, {
+    headers: { Authorization: token },
+  });
+};
 
 //로그인
 export const login = (email, password) => api.post(`/api/auth/login`);
@@ -42,8 +47,19 @@ export const profile = () => api.get(`/api/user/profile`);
 
 //비밀번호 변경
 export const ChangePassword = (currentPassword, newPassword) =>
-  api.put(`/api/user/change-password`, {currentPassword, newPassword});
+  api.put(`/api/user/change-password`, { currentPassword, newPassword });
 
 //프로필 사진 변경
-export const ChangePic = () =>
-  api.put(`/api/user/change-profile-image`);
+export const ChangePic = () => api.put(`/api/user/change-profile-image`);
+
+//비밀번호 확인
+export const checkPassword = (password) => {
+  const token = localStorage.getItem("Authorization");
+  return api.post(
+    `/api/auth/checkPassword`,
+    { password },
+    {
+      headers: { Authorization: token },
+    }
+  );
+};
