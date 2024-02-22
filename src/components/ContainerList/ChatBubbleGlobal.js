@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../../styles/ChatBubble.css";
 
-function ChatBubbleGlobal({ nickName }) {
+function ChatBubbleGlobal({ nickname }) {
   const [isChatOpen, setChatOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState("");
   const [messages, setMessages] = useState([]); // 메시지를 저장할 상태
@@ -16,8 +16,9 @@ function ChatBubbleGlobal({ nickName }) {
   const baseurl = process.env.REACT_APP_WS_PROXY;
 
   useEffect(() => {
-    setUserNickname(nickName);
-  }, []);
+    console.log(nickname);
+    setUserNickname(nickname);
+  }, [nickname]);
 
   useEffect(() => {
     if (userNickname !== "") {

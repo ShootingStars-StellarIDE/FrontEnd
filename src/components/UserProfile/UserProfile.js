@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import * as auth from "../../apis/auth";
 import selectpic from "../../assets/selectpic.svg";
 import "../../styles/UserProfile.css";
 import UserDeleteModal from "./UserDeleteModal";
+import Loading from "../Loading";
 // import { setAccessToken } from "../../Store/UserSlice";
 
 function UserProfile({
@@ -25,6 +26,8 @@ function UserProfile({
     "(영어,특수문자,숫자)를 포함한 8~16자를 입력하세요(허용 특수문자:@$!%*#?&)"
   );
   const [renewPasswordError, setRenewPasswordError] = useState(" ");
+  const [isLoading, setIsLoading] = useState(false);
+  let isFirstLoading = useRef(true);
 
   //----------------------------------------------------------------비밀번호 관련
   const onChangePassword = (event) => {
@@ -126,6 +129,9 @@ function UserProfile({
 
   //----------------------------------------------------------------회원정보 수정 요청
   const editInfoApi = async (form) => {
+    if (isFirstLoading.current) {
+      setIsLoading(true); // 데이터 불러오기 시작
+    }
     let response = await auth.checkPassword(form.password);
     // 비밀번호 확인
     try {
@@ -187,6 +193,11 @@ function UserProfile({
             // 현재 사용중인 패스워드입니다. 다른 패스워드로 입력바랍니다.
             console.error(error.response.data.description);
           }
+        } finally {
+          if (isFirstLoading) {
+            setIsLoading(false); // 데이터 불러오기 완료
+            isFirstLoading.current = false;
+          }
         }
       }
     } catch (error) {
@@ -218,6 +229,11 @@ function UserProfile({
         // 잘못된 패스워드입니다.
         console.error(error.response.data.description);
       }
+    } finally {
+      if (isFirstLoading) {
+        setIsLoading(false); // 데이터 불러오기 완료
+        isFirstLoading.current = false;
+      }
     }
 
     return response;
@@ -230,6 +246,21 @@ function UserProfile({
   const UserDelete = () => {
     openModal(); // 모달 열기
   };
+
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  // 상태가 변경될 때마다 폼의 유효성을 재평가
+  useEffect(() => {
+    const isValid =
+      currentPasswordError === "비밀번호가 조건에 맞습니다." &&
+      newPasswordError === "사용 가능한 비밀번호입니다." &&
+      renewPasswordError === "비밀번호가 일치합니다.";
+    setIsFormValid(isValid);
+  }, [currentPasswordError, newPasswordError, renewPasswordError]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="contents">
@@ -344,12 +375,18 @@ function UserProfile({
             <p className="info">{ownedcontainers}개</p>
             <p className="title">공유 컨테이너 개수</p>
             <p className="info">{sharedcontainers}개</p>
-            <button className="edit-button" type="submit">
+            <button
+              className={`edit-button ${isFormValid ? "" : "disabled"}`}
+              type="submit"
+            >
               회원정보 수정
             </button>
-            <p className="cancel-membership" onClick={UserDelete}>
-              회원 탈퇴
-            </p>
+            <div className="cancel-membership-container">
+              <div>회원 탈퇴를 하시겠습니까?</div>
+              <div className="cancel-membership" onClick={UserDelete}>
+                회원 탈퇴
+              </div>
+            </div>
           </div>
         </div>
       </form>

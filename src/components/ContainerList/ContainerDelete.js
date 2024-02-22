@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import "../../styles/ContainerModal.css";
 
 import * as auth from "../../apis/auth";
 import { useNavigate } from "react-router-dom";
+import Loading from "../Loading";
 
-function ContainerDelete({ selectedContainerId, isOpen, close }) {
+function ContainerDelete({ removeOwner, selectedContainerId, isOpen, close }) {
+  const [isLoading, setIsLoading] = useState(false);
+  let isFirstLoading = useRef(true);
   const [password, setPassword] = useState("");
   const [isVerified, setIsVerified] = useState(false);
   const [errorMsg, setErrorMsg] = useState(" ");
@@ -19,6 +22,9 @@ function ContainerDelete({ selectedContainerId, isOpen, close }) {
   };
 
   const onClickPassWordCheck = async () => {
+    if (isFirstLoading.current) {
+      setIsLoading(true); // 데이터 불러오기 시작
+    }
     try {
       const checkPassword = await auth.checkPassword(password);
       console.log(checkPassword);
@@ -75,23 +81,38 @@ function ContainerDelete({ selectedContainerId, isOpen, close }) {
         console.error(errorRes.description);
         setErrorMsg(errorRes.description);
       }
+    } finally {
+      if (isFirstLoading) {
+        setIsLoading(false); // 데이터 불러오기 완료
+        isFirstLoading.current = false;
+      }
     }
   };
 
   const onClickDeleteContainer = async () => {
+    if (isFirstLoading.current) {
+      setIsLoading(true); // 데이터 불러오기 시작
+    }
     try {
       const deleteContainer = await auth.containerDelete(containerId);
 
       if (deleteContainer.status === 200) {
         alert("성공적으로 컨테이너를 삭제했습니다.");
-
+        removeOwner(containerId);
         close();
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      if (isFirstLoading) {
+        setIsLoading(false); // 데이터 불러오기 완료
+        isFirstLoading.current = false;
+      }
     }
   };
-
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="createContainer-Form">
       <div className="modal-backdrop">

@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 
 import "../../styles/ContainerModal.css";
 import javaIco from "../../assets/JAVA.svg";
 import pythonIco from "../../assets/python.svg";
 import * as auth from "../../apis/auth";
+import Loading from "../Loading";
 
 function ContainerModal({ isOpen, close, addOwner }) {
   // 컨테이너 정보
   const [containerType, setContainerType] = useState("");
   const [containerName, setContainerName] = useState("");
   const [containerDescription, setContainerDescription] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  let isFirstLoading = useRef(true);
 
   if (!isOpen) return null;
 
@@ -31,15 +34,48 @@ function ContainerModal({ isOpen, close, addOwner }) {
   };
 
   // 컨테이너 생성요청
-  const createContainerApi = async (type, name, desc) => {
-    let response = await auth.containerCreate(type, name, desc);
-    if (response.status === 200) {
-      addOwner(response.data);
-      close();
-    }
-    console.log(response);
+  // const createContainerApi = async (type, name, desc) => {
+  //   // if (isFirstLoading.current) {
+  //   //   setIsLoading(true); // 데이터 불러오기 시작
+  //   // }
+  //   let response = await auth.containerCreate(type, name, desc);
+  //   if (response.status === 200) {
+  //     addOwner(response.data);
+  //     close();
+  //   } else {
+  //     // console.error(error.response.data.description);
+  //     // if (isFirstLoading) {
+  //     //   setIsLoading(false); // 데이터 불러오기 완료
+  //     //   isFirstLoading.current = false;
+  //     // }
+  //   }
+  //   console.log(response);
 
-    return response;
+  //   return response;
+  // };
+
+  // 컨테이너 수정요청
+  const createContainerApi = async (type, name, desc) => {
+    if (isFirstLoading.current) {
+      setIsLoading(true); // 데이터 불러오기 시작
+    }
+    try {
+      let response = await auth.containerCreate(type, name, desc);
+      console.log(response);
+      if (response.status === 200) {
+        addOwner(response.data);
+        alert("성공적으로 생성하셨습니다 :)");
+        // editOwner(containerId, desc);
+        close();
+      }
+    } catch (error) {
+      alert(`${error.response.data.description}`);
+    } finally {
+      if (isFirstLoading) {
+        setIsLoading(false); // 데이터 불러오기 완료
+        isFirstLoading.current = false;
+      }
+    }
   };
 
   // 언어버튼
@@ -87,7 +123,9 @@ function ContainerModal({ isOpen, close, addOwner }) {
       createContainerApi(type, name, desc);
     }
   };
-
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <form
       className="createContainer-Form"

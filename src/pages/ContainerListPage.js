@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../styles/ContainerListPage.css";
 import "../styles/Sidebar.css";
 import "../styles/ContainerList.css";
@@ -11,10 +11,12 @@ import "../styles/ContainerModal.css";
 import Sidebar from "../components/ContainerList/Sidebar";
 import ContainerList from "../components/ContainerList/ContainerList";
 import ChatBubbleGlobal from "../components/ContainerList/ChatBubbleGlobal";
+import Loading from "../components/Loading";
 
 function ContainerListPage() {
   const [isModalOpen, setModalOpen] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
+  let isFirstLoading = useRef(true);
   const toggleModal = () => {
     setModalOpen(!isModalOpen);
   };
@@ -27,6 +29,9 @@ function ContainerListPage() {
   useEffect(() => {
     // API 요청 함수
     const userInfoApi = async () => {
+      if (isFirstLoading.current) {
+        setIsLoading(true); // 데이터 불러오기 시작
+      }
       try {
         let response = await auth.profile();
         console.log(response.data);
@@ -58,11 +63,18 @@ function ContainerListPage() {
           // 존재하지 않는 사용자입니다.
           console.error(error.response.data.description);
         }
+      } finally {
+        if (isFirstLoading) {
+          setIsLoading(false); // 데이터 불러오기 완료
+          isFirstLoading.current = false;
+        }
       }
     };
     userInfoApi();
   }, []);
-
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="main-container">
       <Sidebar
@@ -72,7 +84,7 @@ function ContainerListPage() {
 
       <ContainerList nickname={userNickname}></ContainerList>
 
-      <ChatBubbleGlobal nickName={userNickname} />
+      <ChatBubbleGlobal nickname={userNickname} />
 
       {/* <ContainerModal isOpen={isModalOpen} onClose={toggleModal} /> */}
     </div>

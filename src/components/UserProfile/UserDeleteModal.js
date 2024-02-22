@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import * as auth from "../../apis/auth";
 import { useNavigate } from "react-router-dom";
 import "../../styles/DeleteUserModal.css";
+import Loading from "../Loading";
 
 const UserDeleteModal = ({ isOpen, close }) => {
   const [password, setPassword] = useState("");
   const [isVerified, setIsVerified] = useState(false);
   const [errorMsg, setErrorMsg] = useState(" ");
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  let isFirstLoading = useRef(true);
 
   if (!isOpen) return null;
 
@@ -16,6 +19,9 @@ const UserDeleteModal = ({ isOpen, close }) => {
   };
 
   const onClickPassWordCheck = async () => {
+    if (isFirstLoading.current) {
+      setIsLoading(true); // 데이터 불러오기 시작
+    }
     try {
       const checkPassword = await auth.checkPassword(password);
       console.log(checkPassword);
@@ -72,10 +78,18 @@ const UserDeleteModal = ({ isOpen, close }) => {
         console.error(errorRes.description);
         setErrorMsg(errorRes.description);
       }
+    } finally {
+      if (isFirstLoading) {
+        setIsLoading(false); // 데이터 불러오기 완료
+        isFirstLoading.current = false;
+      }
     }
   };
 
   const onClickDeletePassWord = async () => {
+    if (isFirstLoading.current) {
+      setIsLoading(true); // 데이터 불러오기 시작
+    }
     try {
       const deleteUser = await auth.deleteUser();
       console.log(deleteUser);
@@ -142,9 +156,16 @@ const UserDeleteModal = ({ isOpen, close }) => {
         setErrorMsg(errorRes.description);
         console.error(errorRes.description);
       }
+    } finally {
+      if (isFirstLoading) {
+        setIsLoading(false); // 데이터 불러오기 완료
+        isFirstLoading.current = false;
+      }
     }
   };
-
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="createContainer-Form">
       <div className="modal-backdrop">

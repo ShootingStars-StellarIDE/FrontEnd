@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import * as auth from "../../apis/auth";
+import Loading from "../Loading";
 
 function Sidebar({ nickname, profileimgurl }) {
+  const [isLoading, setIsLoading] = useState(false);
+  let isFirstLoading = useRef(true);
+
   const navigate = useNavigate();
 
   const goToProfile = () => {
@@ -21,6 +25,9 @@ function Sidebar({ nickname, profileimgurl }) {
 
   //----------------------------------------------------------------logout
   const logout = async () => {
+    if (isFirstLoading.current) {
+      setIsLoading(true); // 데이터 불러오기 시작
+    }
     try {
       const res = await auth.logout();
       console.log(res);
@@ -68,6 +75,15 @@ function Sidebar({ nickname, profileimgurl }) {
       else if (errorRes.code === "1104") {
         console.error(errorRes.description);
       }
+    } finally {
+      if (isFirstLoading) {
+        setIsLoading(false); // 데이터 불러오기 완료
+        isFirstLoading.current = false;
+      }
+    }
+
+    if (isLoading) {
+      return <Loading />;
     }
     //--------------------------------------------------------
   };
@@ -118,9 +134,11 @@ function Sidebar({ nickname, profileimgurl }) {
           ))}
         </details>
       </div>
-      <p className="logout" onClick={logout}>
-        로그아웃 하기
-      </p>
+      <div className="logout-div">
+        <p className="logout" onClick={logout}>
+          로그아웃 하기
+        </p>
+      </div>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import ContainerListPage from "./pages/ContainerListPage";
 import ContainerEditPage from "./pages/ContainerEditPage";
 import ProfilePage from "./pages/ProfilePage";
 import UserDelete from "./components/UserProfile/UserDeleteModal";
+import Loading from "./components/Loading";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             path={"/dashboard/containers"}
             element={<ContainerListPage />}
           />
+
           <Route path={"/dashboard/profile"} element={<ProfilePage />} />
           <Route
             path={"/container/:containerId"}

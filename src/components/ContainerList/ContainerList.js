@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ContainerModal from "./ContainerModal";
 import edteIcon from "../../assets/edit.svg";
@@ -10,6 +10,8 @@ import ContainerShare from "./ContainerShare";
 import ContainerDelete from "./ContainerDelete";
 
 function ContainerList({ nickname }) {
+  const [isLoading, setIsLoading] = useState(false);
+  let isFirstLoading = useRef(true);
   const navigate = useNavigate();
 
   // 모달
@@ -40,20 +42,26 @@ function ContainerList({ nickname }) {
   const [filteredOwnCards, setFilteredOwnCards] = useState(owncards);
   const [filteredSharedCards, setFilteredSharedCards] = useState(sharedcards);
 
-  console.log(filteredOwnCards);
   useEffect(() => {
     // 페이지 로드시 모든 컨테이너 정보 불러오기
     const containerSearchApi = async () => {
+      if (isFirstLoading.current) {
+        setIsLoading(true); // 데이터 불러오기 시작
+      }
       try {
         let res = await auth.containerSearch();
 
         if (res.status == 200) {
           setOwnCards(res.data.ownContainers); // owncards에 소유 컨테이너 목록 배열 적용
           setSharedCards(res.data.shareContainers); // sharedcards에 공유 컨테이너 목록 배열 적용
-          console.log(res.data.ownContainers);
-          console.log(res.data.shareContainers);
         }
-      } catch (error) {}
+      } catch (error) {
+      } finally {
+        if (isFirstLoading) {
+          setIsLoading(false); // 데이터 불러오기 완료
+          isFirstLoading.current = false;
+        }
+      }
     };
 
     containerSearchApi();
@@ -134,6 +142,30 @@ function ContainerList({ nickname }) {
     setOwnCards((prev) => [...prev, res]);
   };
 
+  const removeOwner = (containerId) => {
+    let nowOwnCards = owncards.filter(
+      (card) => card.containerId !== containerId
+    );
+    setOwnCards(nowOwnCards);
+    console.log("리무브 오너 실행");
+  };
+
+  const editOwner = (containerId, newDescription) => {
+    const targetIndex = owncards.findIndex(
+      (card) => card.containerId === containerId
+    );
+
+    if (targetIndex !== -1) {
+      const updatedCards = [...owncards];
+      updatedCards[targetIndex] = {
+        ...updatedCards[targetIndex],
+        description: newDescription,
+      };
+
+      setOwnCards(updatedCards);
+    }
+  };
+
   //----------------------------------------------------------------태균 작업
   const [selectedContainerId, setSelectedContainerId] = useState(null);
 
@@ -154,6 +186,10 @@ function ContainerList({ nickname }) {
     console.log(selectedContainerId);
     openShareModal(); // 모달을 여는 함수
   };
+
+  if (isLoading) {
+    return <loading />;
+  }
 
   //----------------------------------------------------------------
   return (
@@ -213,62 +249,57 @@ function ContainerList({ nickname }) {
         {/* 컨테이너 추가 버튼 */}
         <div onClick={openModal}>+</div>
 
-        {filteredOwnCards.map(
-          (item, owncards) => (
-            console.log(item, owncards),
-            (
-              <div className="concards" key={owncards}>
-                <div className="conname-line">
-                  <div className="conname">
-                    {item && item.name && cutString(item.name, 20)}
-                  </div>
-                  <div className="esd-icons">
-                    <img
-                      src={edteIcon}
-                      alt="edit"
-                      onClick={() => handleOpenEditModal(item)}
-                    />
-                    <img
-                      src={shareIcon}
-                      alt="share"
-                      onClick={() => handleOpenShareModal(item)}
-                    />
-                    <img
-                      src={deleteIcon}
-                      alt="delete"
-                      onClick={() => handleOpenDeleteModal(item)}
-                    />
-                  </div>
-                </div>
-                <div className="typeline">
-                  <div className="idelang">{item && item.type}</div>
-                  <div className="createdTime">
-                    생성:{" "}
-                    {item && item.createdTime && item.createdTime.split("T")[0]}
-                  </div>
-                </div>
-                <div className="nicknameline">
-                  <div className="editUserUuid">
-                    {item && item.editUserNickname}
-                  </div>
-                  <div className="lastModifiedTime">
-                    수정:{" "}
-                    {item &&
-                      item.lastModifiedTime &&
-                      item.lastModifiedTime.split("T")[0]}
-                  </div>
-                </div>
-                <div className="condesc">
-                  {item && item.description && cutString(item.description, 80)}
-                </div>
-                <div className="idestart">시작하기</div>
+        {filteredOwnCards.map((item, owncards) => (
+          <div className="concards" key={owncards}>
+            <div className="conname-line">
+              <div className="conname">
+                {item && item.name && cutString(item.name, 20)}
               </div>
-            )
-          )
-        )}
+              <div className="esd-icons">
+                <img
+                  src={edteIcon}
+                  alt="edit"
+                  onClick={() => handleOpenEditModal(item)}
+                />
+                <img
+                  src={shareIcon}
+                  alt="share"
+                  onClick={() => handleOpenShareModal(item)}
+                />
+                <img
+                  src={deleteIcon}
+                  alt="delete"
+                  onClick={() => handleOpenDeleteModal(item)}
+                />
+              </div>
+            </div>
+            <div className="typeline">
+              <div className="idelang">{item && item.type}</div>
+              <div className="createdTime">
+                생성:{" "}
+                {item && item.createdTime && item.createdTime.split("T")[0]}
+              </div>
+            </div>
+            <div className="nicknameline">
+              <div className="editUserUuid">
+                {item && item.editUserNickname}
+              </div>
+              <div className="lastModifiedTime">
+                수정:{" "}
+                {item &&
+                  item.lastModifiedTime &&
+                  item.lastModifiedTime.split("T")[0]}
+              </div>
+            </div>
+            <div className="condesc">
+              {item && item.description && cutString(item.description, 80)}
+            </div>
+            <div className="idestart">시작하기</div>
+          </div>
+        ))}
       </div>
 
-      <h1>공유된 컨테이너</h1>
+      <h1>공유받은 컨테이너</h1>
 
       <div className="container-cards-2">
         {filteredSharedCards.map((item, sharedcards) => (
@@ -309,6 +340,7 @@ function ContainerList({ nickname }) {
 
       <ContainerModal addOwner={addOwner} isOpen={isOpen} close={closeModal} />
       <ContainerEdit
+        editOwner={editOwner}
         selectedContainerId={selectedContainerId}
         isOpen={isEditOpen}
         close={closeEditModal}
@@ -319,6 +351,7 @@ function ContainerList({ nickname }) {
         close={closeShareModal}
       />
       <ContainerDelete
+        removeOwner={removeOwner}
         selectedContainerId={selectedContainerId}
         isOpen={isDeleteOpen}
         close={closeDeleteModal}
