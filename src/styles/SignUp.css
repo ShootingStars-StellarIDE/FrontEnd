@@ -1,0 +1,119 @@
+.signup-input {
+  height: 30px;
+  border: none;
+  outline: none;
+  width: 250px;
+  text-align: center;
+}
+.signup-input::-webkit-input-placeholder {
+  text-align: center;
+}
+.Signup-container {
+  top: 50%;
+  left: 50%;
+  position: absolute;
+}
+
+.Signup-Form {
+  top: 50%;
+  left: 50%;
+  display: flex;
+  justify-content: center; /* 자식 요소를 가로(수평) 기준으로 가운데 정렬시킴 */
+  align-items: center;
+  transform: translateX(-50%) translateY(-50%);
+  flex-direction: column;
+  height: 100vh;
+}
+
+.Signup-signup-button {
+  height: 70px;
+  width: 500px;
+  border-radius: 50px;
+  border: none;
+  background-color: #4ed9a5;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  margin-top: 50px;
+}
+
+.Signup-email-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid #4ed9a5;
+  width: 500px;
+  justify-content: space-between;
+  margin-top: 50px;
+}
+
+.Signup-emailAuth-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid #4ed9a5;
+  width: 500px;
+  justify-content: space-between;
+  margin-top: 50px;
+}
+
+.Signup-nickname-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid #4ed9a5;
+  width: 500px;
+  justify-content: space-between;
+  margin-top: 50px;
+}
+
+.Signup-password-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid #4ed9a5;
+  width: 500px;
+  justify-content: space-between;
+  margin-top: 50px;
+}
+
+.Signup-re-password-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid #4ed9a5;
+  width: 500px;
+  justify-content: space-between;
+  margin-top: 50px;
+}
+
+.Signup-auth-button {
+  height: 35px;
+  width: 100px;
+  border-radius: 50px;
+  border: none;
+  background-color: #4ed9a5;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.input-null {
+  width: 100px;
+}
+
+.error-message {
+  font-size: 14px;
+  min-height: 20px;
+  margin-top: 5px;
+}
+
+.is-error {
+  color: red;
+}
+
+.is-valid {
+  color: #4ed9a5;
+  visibility: visible;
+}

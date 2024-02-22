@@ -1,0 +1,112 @@
+.edit-page {
+    display: flex;
+    height: 100vh;
+    color: white;
+  background-color: #181818;
+}
+
+.tree-container,
+.editor-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.tree-container {
+    width: 20%;
+    border-right: 1px solid #333;
+    position: relative;
+    min-height: 100%;
+}
+
+.tree-bar {
+  padding: 16px;
+  border-bottom: 3px solid #333;
+  /* background-color: #333; */
+}
+
+.tree-main {
+  padding: 10px;
+  overflow: auto;
+}
+
+.editor-container {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    flex-grow: 1;
+}
+
+.editor-placeholder {
+    flex-grow: 1;
+    width: 100%;
+    height: 80vh;
+    background-color: #1E1E1E;
+}
+
+.editor-image {
+    /* text-align: center; */
+    /* margin: 300px 0px; */
+}
+
+.tabs {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-x: auto;
+}
+  
+.tab-list {
+    display: flex;
+}
+  
+.tab {
+    padding: 16px 6px 16px 16px;
+    border-right: 1px solid #333;
+    cursor: pointer;
+}
+  
+.tab.active {
+    background-color: #252526;
+    border-bottom: 1px solid rgb(42, 122, 241); 
+}
+  
+.tab-panel {
+    border-top: 1px solid #333;
+}
+
+.close-tab {
+    background-color: #252526;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.close-tab:hover {
+    background-color: black;
+}
+
+.result {
+  padding: 20px;
+  background-color: #181818;
+  color: red;
+  border-top: 1px solid #333;
+  overflow: auto;
+}
+
+.resize-handle-vertical {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    cursor: ew-resize;
+}
+
+.resize-handle-horizontal {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 5px;
+    cursor: ns-resize;
+}

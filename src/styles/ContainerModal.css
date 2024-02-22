@@ -1,0 +1,80 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 400px; 
+}
+
+.modal .buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal button {
+  /* 버튼 스타일 */
+  background-color: #4ed9a5;
+  color: black;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+}
+
+.modal input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 0px;
+  border-bottom: 1px solid #ddd;
+  box-sizing: border-box; /* 패딩을 너비에 포함 */
+}
+
+.modal textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+  resize: none;
+}
+
+.modal textarea {
+  height: 250px;
+}
+
+.modal h3 {
+  margin: 20px 0px;
+}
+
+.lang-button-container img {
+  border: 3px solid transparent;
+  width: 72px;
+  cursor: pointer;
+}
+
+.lang-button-container img.selected {
+  border: 3px solid #4ed9a5;
+  border-radius: 10%;
+}
+
+.lang-button-container {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 50px;
+}

@@ -1,0 +1,103 @@
+.Login-input {
+  height: 30px;
+  border: none;
+  outline: none;
+  width: 250px;
+  text-align: center;
+}
+
+.Login-input::-webkit-input-placeholder {
+  text-align: center;
+}
+
+.Login-container {
+  top: 50%;
+  left: 50%;
+  position: absolute;
+}
+
+.Login-Form {
+  top: 50%;
+  left: 50%;
+  display: flex;
+  justify-content: center; /* 자식 요소를 가로(수평) 기준으로 가운데 정렬시킴 */
+  align-items: center;
+  transform: translateX(-50%) translateY(-50%);
+  flex-direction: column;
+  height: 100vh;
+}
+
+.Login-signupQA {
+  display: flex;
+  flex-direction: row;
+}
+
+.Login-password-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid #4ed9a5;
+  width: 500px;
+  justify-content: space-between;
+  margin-top: 70px;
+}
+
+.Login-email-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid #4ed9a5;
+  width: 500px;
+  justify-content: space-between;
+  margin-top: 70px;
+}
+
+input {
+  width: 350px;
+  height: 30px;
+  border: none;
+  outline: none;
+}
+
+.Login-login-button {
+  height: 70px;
+  width: 500px;
+  border-radius: 50px;
+  border: none;
+  background-color: #4ed9a5;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  margin-top: 70px;
+}
+
+.Login-gotosignup {
+  color: #4ed9a5;
+}
+label {
+  width: 100px;
+}
+
+.input-null {
+  width: 100px;
+}
+
+.Login-gotosignup {
+  cursor: pointer;
+}
+
+.Login-signupQA {
+  margin-top: 50px;
+}
+
+.error-message {
+  font-size: 14px;
+  min-height: 20px;
+  margin-top: 5px;
+  visibility: hidden;
+}
+
+.error-message.is-error {
+  color: red;
+  visibility: visible;
+}
