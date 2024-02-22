@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
-import Editor from '@monaco-editor/react';
-import yorkie from 'yorkie-js-sdk';
+import Editor from "@monaco-editor/react";
+import yorkie from "yorkie-js-sdk";
 
 import IconButton from '@mui/material/IconButton';
 import SaveIcon from '@mui/icons-material/Save';
@@ -45,7 +45,7 @@ function ContainerEditPage() {
     const yorkieDoc = useRef(null);
     const [updateTimeout, setUpdateTimeout] = useState(null);
 
-    const token = localStorage.getItem("Authorization");
+  const token = localStorage.getItem("Authorization");
 
     // 페이지 로딩 시 파일 트리 조회
     useEffect(() => {
@@ -100,10 +100,10 @@ function ContainerEditPage() {
         return;
     };
 
-    const TreeItem = ({ item }) => {
-        // 디렉토리인 경우, 재귀적으로 TreeItem 컴포넌트를 호출
-        const [isCollapsed, setIsCollapsed] = useState(false);
-        const toggleCollapse = () => setIsCollapsed(!isCollapsed);
+  const TreeItem = ({ item }) => {
+    // 디렉토리인 경우, 재귀적으로 TreeItem 컴포넌트를 호출
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const toggleCollapse = () => setIsCollapsed(!isCollapsed);
 
         if (item.type === 'directory') {
             return (
@@ -420,25 +420,31 @@ function ContainerEditPage() {
         document.addEventListener('mouseup', stopResize);
     };
 
-    const resizeTree = (event) => {
-        const newWidth = event.clientX;
-        if (newWidth > minTreeWidth && newWidth < window.innerWidth - minTreeWidth) {
-            setTreeWidth(newWidth);
-        }
-    };
+  const resizeTree = (event) => {
+    const newWidth = event.clientX;
+    if (
+      newWidth > minTreeWidth &&
+      newWidth < window.innerWidth - minTreeWidth
+    ) {
+      setTreeWidth(newWidth);
+    }
+  };
 
-    const startResizeResult = (event) => {
-        setIsDragging(true);
-        document.addEventListener('mousemove', resizeResult);
-        document.addEventListener('mouseup', stopResize);
-    };
+  const startResizeResult = (event) => {
+    setIsDragging(true);
+    document.addEventListener("mousemove", resizeResult);
+    document.addEventListener("mouseup", stopResize);
+  };
 
-    const resizeResult = (event) => {
-        const newHeight = window.innerHeight - event.clientY;
-        if (newHeight > minResultHeight && newHeight < window.innerHeight - minResultHeight) {
-            setResultHeight(newHeight);
-        }
-    };
+  const resizeResult = (event) => {
+    const newHeight = window.innerHeight - event.clientY;
+    if (
+      newHeight > minResultHeight &&
+      newHeight < window.innerHeight - minResultHeight
+    ) {
+      setResultHeight(newHeight);
+    }
+  };
 
     const stopResize = () => {
         setIsDragging(false);

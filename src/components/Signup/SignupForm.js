@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import Loading from "../Loading";
 
 const SignupForm = ({
   join,
@@ -8,6 +9,9 @@ const SignupForm = ({
   emailCheck,
 }) => {
   //----------------------------------------------------------------state
+  const [isLoading, setIsLoading] = useState(false);
+  let isFirstLoading = useRef(true);
+
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [nickname, setNickname] = useState("");
@@ -33,6 +37,9 @@ const SignupForm = ({
   }
 
   async function onClickEmailAuth(event) {
+    if (isFirstLoading.current) {
+      setIsLoading(true); // 데이터 불러오기 시작
+    }
     event.preventDefault(); // 버튼의 기본 동작 방지
 
     const emailCheck2 = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -45,13 +52,13 @@ const SignupForm = ({
     try {
       // 이메일 중복 검사 실행
       const duplicateResult = await emailCheck(email);
-
+      console.log(email);
       // 정상적인 응답 처리
       if (duplicateResult.status == 200) {
         // 중복된 이메일이 없는 경우, 이메일 인증 요청 실행
         try {
           const sendEmailRequest = await sendEmailAuthRequest(email);
-
+          console.log(email);
           if (sendEmailRequest.status == 200) {
             setEmailError("올바르게 전송되었습니다. 메일을 확인해주세요.");
             setIsEmailAuthed(true); // 인증 성공 상태 업데이트
@@ -85,6 +92,11 @@ const SignupForm = ({
           else if (error.response.data.code == 1302) {
             console.error(error.response.data.description);
           }
+        } finally {
+          if (isFirstLoading) {
+            setIsLoading(false); // 데이터 불러오기 완료
+            isFirstLoading.current = false;
+          }
         }
       }
     } catch (error) {
@@ -97,6 +109,11 @@ const SignupForm = ({
         // 잘못된 형식의 이메일입니다.
         console.error(error.response.data.description);
       }
+    } finally {
+      if (isFirstLoading) {
+        setIsLoading(false); // 데이터 불러오기 완료
+        isFirstLoading.current = false;
+      }
     }
   }
 
@@ -107,10 +124,14 @@ const SignupForm = ({
   }
 
   async function onClickCheckAuthCode(event) {
+    if (isFirstLoading.current) {
+      setIsLoading(true); // 데이터 불러오기 시작
+    }
     event.preventDefault(); // 폼 제출을 방지
 
     try {
       const response = await CodeCheck(email, code);
+
       // 응답 상태 코드가 200인 경우
       if (response.status == 200) {
         setEmailAuthError("인증되었습니다.");
@@ -129,6 +150,11 @@ const SignupForm = ({
       else if (error.response.data.code == 1101) {
         console.error(error.response.data.description);
       }
+    } finally {
+      if (isFirstLoading) {
+        setIsLoading(false); // 데이터 불러오기 완료
+        isFirstLoading.current = false;
+      }
     }
   }
 
@@ -139,6 +165,9 @@ const SignupForm = ({
   }
 
   async function onClickNickname(event) {
+    if (isFirstLoading.current) {
+      setIsLoading(true); // 데이터 불러오기 시작
+    }
     const nicknameCheckRegex = /^[a-z0-9]{5,20}$/;
 
     if (!nicknameCheckRegex.test(nickname)) {
@@ -149,6 +178,7 @@ const SignupForm = ({
     try {
       // API를 통한 닉네임 중복 검사
       const response = await nickNameCheck(nickname);
+
       if (response.status == 200) {
         setNicknameError("사용 가능한 닉네임입니다.");
       }
@@ -164,6 +194,11 @@ const SignupForm = ({
       //이미 사용중인 닉네임입니다.
       else if (error.response.data.code == 1302) {
         console.error(error.response.data.description);
+      }
+    } finally {
+      if (isFirstLoading) {
+        setIsLoading(false); // 데이터 불러오기 완료
+        isFirstLoading.current = false;
       }
     }
   }
@@ -216,6 +251,7 @@ const SignupForm = ({
 
   const onJoin = async (e) => {
     e.preventDefault(); // submit 기본 동작 방지
+
     const form = e.target;
     const email = form.email.value;
     const nickname = form.nickname.value;
@@ -267,6 +303,10 @@ const SignupForm = ({
     }
   };
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <div className="Signup-container">
       <form
@@ -289,6 +329,7 @@ const SignupForm = ({
             id="Signup-email"
             placeholder="이메일을 입력해주세요"
             name="email"
+            value={email}
             onChange={onChangeEmail}
             disabled={isEmailAuthed} // 이메일 인증 후 수정 불가능
           />

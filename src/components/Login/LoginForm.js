@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../Store/UserSlice";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import Loading from "../Loading";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -75,7 +76,9 @@ const LoginForm = () => {
       });
     }
   };
-
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <div className="Login-container">
       <form className="Login-Form" onSubmit={(e) => onLogin(e)}>
