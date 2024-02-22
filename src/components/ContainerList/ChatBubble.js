@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../../styles/ChatBubble.css";
 import axios from "axios";
+import Loading from "../Loading";
 
 function ChatBubble(containerId) {
   const [isChatOpen, setChatOpen] = useState(false);
@@ -11,12 +12,16 @@ function ChatBubble(containerId) {
   const [isComposing, setIsComposing] = useState(false);
   const [searchIndexes, setSearchIndexes] = useState([]);
   const [currentSearchIndex, setCurrentSearchIndex] = useState(-1);
-
+  const [containerName, setContainerName] = useState("");
   const webSocket = useRef(null);
   const messagesEndRef = useRef(null);
   const baseurl = process.env.REACT_APP_WS_PROXY;
   const token = localStorage.getItem("Authorization");
   const container = containerId.containerId;
+  //----------------------------------------------------------------로딩
+  const [isLoading, setIsLoading] = useState(false);
+  let isFirstLoading = useRef(true);
+  //----------------------------------------------------------------
 
   useEffect(() => {
     if (roomNumber !== 0) {
@@ -67,6 +72,9 @@ function ChatBubble(containerId) {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (isFirstLoading.current) {
+        setIsLoading(true); // 데이터 불러오기 시작
+      }
       try {
         const res = await axios.get(`/api/container/getRoomId/` + container, {
           headers: { Authorization: token },
@@ -75,9 +83,15 @@ function ChatBubble(containerId) {
         if (res.status == 200) {
           setRoomNumber(res.data.roomId);
           setUserNickname(res.data.nickname);
+          setContainerName(res.data.containerName);
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        if (isFirstLoading) {
+          setIsLoading(false); // 데이터 불러오기 완료
+          isFirstLoading.current = false;
+        }
       }
     };
     fetchData();
@@ -85,6 +99,9 @@ function ChatBubble(containerId) {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (isFirstLoading.current) {
+        setIsLoading(true); // 데이터 불러오기 시작
+      }
       try {
         const res = await axios.get(
           `/api/chat/container/loadHistory?roomId=` + roomNumber,
@@ -98,6 +115,11 @@ function ChatBubble(containerId) {
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        if (isFirstLoading) {
+          setIsLoading(false); // 데이터 불러오기 완료
+          isFirstLoading.current = false;
+        }
       }
     };
     if (roomNumber !== 0) fetchData();
@@ -372,6 +394,10 @@ function ChatBubble(containerId) {
     }
   }, [searchTerm, messages]);
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   //----------------------------------------------------------------
   return (
     <div>
@@ -384,7 +410,7 @@ function ChatBubble(containerId) {
       {isChatOpen && (
         <div className="chat-window">
           <div className="chat-header">
-            <span>{roomNumber}의 채팅</span>
+            <span>{containerName}의 채팅</span>
             <button id="closeChat" onClick={toggleChat}>
               ×
             </button>
