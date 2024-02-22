@@ -70,6 +70,7 @@ function Sidebar({ nickname, profileimgurl }) {
       //존재하지 않는 사용자입니다.
       else if (errorRes.code === "1201") {
         console.error(errorRes.description);
+        console.error(errorRes.description);
       }
       //잘못된 패스워드입니다.
       else if (errorRes.code === "1104") {
