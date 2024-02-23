@@ -4,12 +4,13 @@ import "../../styles/ContainerModal.css";
 
 import * as auth from "../../apis/auth";
 import Loading from "../Loading";
+import axios from "axios";
 
 function ContainerEdit({ editOwner, isOpen, close, selectedContainerId }) {
   const [isLoading, setIsLoading] = useState(false);
   let isFirstLoading = useRef(true);
   // 컨테이너 정보
-
+  const token = localStorage.getItem("Authorization");
   const [containerDescription, setContainerDescription] = useState("");
 
   if (!isOpen) return null;
@@ -22,18 +23,27 @@ function ContainerEdit({ editOwner, isOpen, close, selectedContainerId }) {
 
   // 컨테이너 수정요청
   const containerEditAPI = async (desc) => {
-    if (isFirstLoading.current) {
+    {
       setIsLoading(true); // 데이터 불러오기 시작
     }
     try {
-      const response = await auth.containerEdit(containerId, desc);
-      console.log(response);
+      const response = await axios.patch(
+        `/api/container/edit`,
+        {
+          containerId,
+          containerDescription,
+        },
+        {
+          headers: { Authorization: token },
+        }
+      );
       if (response.status === 200) {
         alert("성공적으로 변경하셨습니다 :)");
         editOwner(containerId, desc);
         close();
       }
     } catch (error) {
+      alert(error.response.data.description);
       console.error(error);
     } finally {
       if (isFirstLoading) {

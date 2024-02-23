@@ -4,6 +4,7 @@ import * as auth from "../apis/auth";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import Loading from "../components/Loading";
+import axios from "axios";
 
 function SignUpPage() {
   const navigate = useNavigate();
@@ -18,7 +19,15 @@ function SignUpPage() {
     }
     let response;
 
-    response = await auth.signup(form.email, form.nickname, form.password);
+    const email = form.email;
+    const nickname = form.nickname;
+    const password = form.password;
+
+    response = await axios.post("/api/auth/signup", {
+      email,
+      nickname,
+      password,
+    });
 
     const status = response.status;
 
@@ -33,14 +42,17 @@ function SignUpPage() {
     } catch (error) {
       // 잘못된 형식의 이메일입니다.
       if (error.response.data.code === 1001) {
+        alert(error.response.data.description);
         console.error(error.response.data.description);
       }
       //잘못된 형식의 인증코드입니다.
       else if (error.response.data.code === 1002) {
+        alert(error.response.data.description);
         console.error(error.response.data.description);
       }
       //잘못된 키 혹은 잘못(만료) 된 인증 코드입니다.
       else if (error.response.data.code === 1101) {
+        alert(error.response.data.description);
         console.error(error.response.data.description);
       }
     } finally {
@@ -56,14 +68,14 @@ function SignUpPage() {
 
   const emailCheck = async (email) => {
     let response;
-    response = await auth.emailCheck(email);
+    response = await axios.post(`/api/check-duplicate/email`, { email });
     return response;
   };
 
   //이메일 인증
   const sendEmailAuthRequest = async (email) => {
     let response;
-    response = await auth.authEmailCode(email);
+    response = await axios.post(`/api/verification/send-email`, { email });
     return response;
   };
 
@@ -71,7 +83,7 @@ function SignUpPage() {
   //코드 인증
   const CodeCheck = async (email, code) => {
     let response;
-    response = await auth.emailCodeCheck(email, code);
+    response = await axios.post(`/api/verification/email`, { email, code });
     return response;
   };
 
@@ -79,7 +91,7 @@ function SignUpPage() {
   //닉네임 중복 검사 인증
   const nickNameCheck = async (nickname) => {
     let response;
-    response = await auth.nickNameCheck(nickname);
+    response = await axios.post(`/api/check-duplicate/nickname`, { nickname });
 
     return response;
   };

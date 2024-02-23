@@ -5,6 +5,7 @@ import "../../styles/ContainerModal.css";
 import * as auth from "../../apis/auth";
 import { useNavigate } from "react-router-dom";
 import Loading from "../Loading";
+import axios from "axios";
 
 function ContainerDelete({ removeOwner, selectedContainerId, isOpen, close }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,6 +14,7 @@ function ContainerDelete({ removeOwner, selectedContainerId, isOpen, close }) {
   const [isVerified, setIsVerified] = useState(false);
   const [errorMsg, setErrorMsg] = useState(" ");
   const navigate = useNavigate();
+  const token = localStorage.getItem("Authorization");
 
   if (!isOpen) return null;
   console.log(selectedContainerId.containerId);
@@ -26,7 +28,11 @@ function ContainerDelete({ removeOwner, selectedContainerId, isOpen, close }) {
       setIsLoading(true); // 데이터 불러오기 시작
     }
     try {
-      const checkPassword = await auth.checkPassword(password);
+      const checkPassword = await axios.post(
+        `./api/auth/checkPassword`,
+        { password },
+        { headers: { Authorization: token } }
+      );
       console.log(checkPassword);
       if (checkPassword.status === 200) {
         console.log("인증 완료");
@@ -90,11 +96,15 @@ function ContainerDelete({ removeOwner, selectedContainerId, isOpen, close }) {
   };
 
   const onClickDeleteContainer = async () => {
-    if (isFirstLoading.current) {
+    {
       setIsLoading(true); // 데이터 불러오기 시작
     }
     try {
-      const deleteContainer = await auth.containerDelete(containerId);
+      const deleteContainer = await axios.delete(
+        `/api/container/delete/${containerId}`,
+
+        { headers: { Authorization: token } }
+      );
 
       if (deleteContainer.status === 200) {
         alert("성공적으로 컨테이너를 삭제했습니다.");
