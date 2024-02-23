@@ -23,7 +23,6 @@ import "../styles/ContainerEditPage.css";
 
 function ContainerEditPage() {
   const params = useParams();
-  const params = useParams();
 
   const [activeTab, setActiveTab] = useState(0);
   const tabName = useRef(null);
