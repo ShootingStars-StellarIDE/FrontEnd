@@ -9,10 +9,10 @@ import * as auth from "../apis/auth";
 import Sidebar from "../components/ContainerList/Sidebar";
 import UserProfile from "../components/UserProfile/UserProfile";
 import ChatBubble from "../components/ContainerList/ChatBubble";
+import axios from "axios";
 
 function ProfilePage() {
-  const navigate = useNavigate();
-
+  const token = localStorage.getItem("Authorization");
   const [userEmail, setUserEmail] = useState("");
   const [userNickname, setUserNickname] = useState("");
   const [userProfileImgUrl, setUserProfileImgUrl] = useState("");
@@ -23,7 +23,9 @@ function ProfilePage() {
     // API 요청 함수
     const userInfoApi = async () => {
       try {
-        let response = await auth.profile();
+        let response = await axios.get(`/api/user/profile`, {
+          headers: { Authorization: token },
+        });
         console.log(response);
         if (response.status == 200) {
           setUserEmail(response.data.email);

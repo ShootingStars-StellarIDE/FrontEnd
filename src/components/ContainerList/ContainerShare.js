@@ -5,12 +5,14 @@ import javaIco from "../../assets/JAVA.svg";
 import pythonIco from "../../assets/python.svg";
 import * as auth from "../../apis/auth";
 import Loading from "../Loading";
+import axios from "axios";
 
 function ContainerShare({ isOpen, close, selectedContainerId }) {
   const [isLoading, setIsLoading] = useState(false);
   let isFirstLoading = useRef(true);
   // 컨테이너 정보
   const [Nickname, setNickname] = useState("");
+  const token = localStorage.getItem("Authorization");
 
   if (!isOpen) return null;
   const containerId = selectedContainerId.containerId;
@@ -22,11 +24,17 @@ function ContainerShare({ isOpen, close, selectedContainerId }) {
 
   // 컨테이너 수정요청
   const ShareAPI = async () => {
-    if (isFirstLoading.current) {
+    {
       setIsLoading(true); // 데이터 불러오기 시작
     }
     try {
-      const response = await auth.containerShare(containerId, Nickname);
+      const response = await axios.post(
+        `/api/container/share`,
+        { containerId, Nickname },
+        {
+          headers: { Authorization: token },
+        }
+      );
       console.log(response);
       if (response.status === 200) {
         alert("성공적으로 공유하셨습니다 :)");
@@ -36,6 +44,10 @@ function ContainerShare({ isOpen, close, selectedContainerId }) {
       const errorRes = error.response.data;
       if (errorRes.code === "1201") {
         // 존재하지 않는 사용자 입니다.
+        alert(error.response.data.description);
+        console.error(errorRes.description);
+      } else {
+        alert(error.response.data.description);
         console.error(errorRes.description);
       }
     } finally {
