@@ -394,9 +394,9 @@ function ChatBubble(containerId) {
     }
   }, [searchTerm, messages]);
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  //   if (isLoading) {
+  //     return <Loading />;
+  //   }
 
   //----------------------------------------------------------------
   return (

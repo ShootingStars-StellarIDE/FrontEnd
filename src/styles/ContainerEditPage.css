@@ -1,27 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap");
 
 .edit-page {
-    display: flex;
-    height: 100vh;
-    color: white;
-    background-color: #181818;
-    font-family: Consolas, "Nanum Gothic";
+  display: flex;
+  height: 100vh;
+  color: white;
+  background-color: #181818;
+  font-family: Consolas, "Nanum Gothic";
 }
 
 .tree-container,
 .editor-container {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: auto;
 }
 
 .tree-container {
-    width: 20%;
-    border-right: 2px solid #333;
-    position: relative;
-    min-height: 100%;
+  width: 20%;
+  border-right: 2px solid #333;
+
+  min-height: 100%;
 }
 
 .tree-bar {
+  display: flex;
+  justify-content: space-between;
   padding: 16px;
   border-bottom: 2px solid #333;
 }
@@ -32,91 +36,93 @@
 }
 
 .editor-container {
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-    overflow: auto;
-    flex-grow: 1;
+  width: 80%;
 }
 
 .editor-placeholder {
-    flex-grow: 1;
-    width: 100%;
-    height: 80vh;
-    background-color: #1E1E1E;
+  display: flex;
+  width: 100%;
+  height: 76vh;
+  background-color: #1e1e1e;
 }
 
 .editor-image {
-    /* text-align: center; */
-    /* margin: 300px 0px; */
+  margin: auto;
 }
 
 .tabs {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    overflow-x: auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-x: auto;
 }
-  
+
 .tab-list {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .tab-button {
-    display: flex;
-    align-items: center;
-    margin-right: 20px;
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
 }
 
-  
 .tab {
-    padding: 25px 6px 24px 16px;
-    border-right: 1px solid #333;
-    cursor: pointer;
+  padding: 25px 6px 26px 16px;
+  border-right: 1px solid #333;
+  cursor: pointer;
 }
-  
+
 .tab.active {
-    background-color: #252526;
-    border-bottom: 2px solid rgb(42, 122, 241); 
+  background-color: #252526;
+  border-bottom: 2px solid rgb(42, 122, 241);
 }
-  
+
 .tab-panel {
-    border-top: 2px solid #333;
+  border-top: 2px solid #333;
 }
 
 .close-tab {
-    background-color: #252526;
-    color: white;
-    border: none;
-    cursor: pointer;
+  background-color: #252526;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
 
 .close-tab:hover {
-    background-color: black;
+  background-color: black;
 }
 
 .result {
+  height: 30%;
   padding: 20px;
   background-color: #181818;
-  color: red;
+  color: white;
   border-top: 2px solid #333;
+  font-size: 16px;
   overflow: auto;
 }
 
 .resize-handle-vertical {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 5px;
-    cursor: ew-resize;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  cursor: ew-resize;
 }
 
-.resize-handle-horizontal {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 5px;
-    cursor: ns-resize;
+.loading-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
