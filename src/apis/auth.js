@@ -51,7 +51,7 @@ export const ChangePassword = (password, newPassword) => {
 
 //프로필 사진 변경
 export const ChangePic = () =>
-  api.put(`/api/user/change-profile-image`);
+  api.patch(`/api/user/changeProfileImage`);
 
 //회원정보 수정시 비밀번호 확인
 export const checkPassword = ( password ) => {
@@ -71,3 +71,4 @@ export const containerCreate = (containerType, containerName, containerDescripti
   const token = localStorage.getItem("Authorization");
   return api.post(`/api/container/create`, {containerType, containerName, containerDescription}, {headers: {Authorization: token}});
 }
+

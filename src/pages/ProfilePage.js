@@ -24,7 +24,6 @@ function ProfilePage() {
         const userInfoApi = async () => {
           try {
             let response = await auth.profile();
-            console.log(response);
             if (response.status == 200) {
               setUserEmail(response.data.email);
               setUserNickname(response.data.nickname);
@@ -33,7 +32,6 @@ function ProfilePage() {
               setUserSharedContainers(response.data.sharedContainers);
             }
           } catch (error) {
-            console.log(error);
             if (error.response.data.code === 100) {
               // 인증에 실패하였습니다.
               console.error(error.response.data.description);
@@ -82,7 +80,7 @@ function ProfilePage() {
                 sharedcontainers = {userSharedContainers}
             ></UserProfile>
 
-            {/* <ChatBubble></ChatBubble> */}
+            <ChatBubble></ChatBubble>
         </div>
     );
 }

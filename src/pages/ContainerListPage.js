@@ -30,13 +30,11 @@ function ContainerListPage() {
     const userInfoApi = async () => {
       try {
         let response = await auth.profile();
-        console.log(response.data);
         if (response.status == 200) {
           setUserNickname(response.data.nickname);
           setUserProfileImgUrl(response.data.profileImgUrl);
         }
       } catch (error) {
-        console.log(error);
         if (error.response.data.code === 100) {
           // 인증에 실패하였습니다.
           console.error(error.response.data.description);
