@@ -62,8 +62,7 @@ export const ChangePassword = (password, newPassword) => {
 };
 
 //프로필 사진 변경
-export const ChangePic = () =>
-  api.patch(`/api/user/changeProfileImage`);
+export const ChangePic = () => api.patch(`/api/user/changeProfileImage`);
 
 //회원정보 수정시 비밀번호 확인(사용)
 export const checkPassword = (password) => {

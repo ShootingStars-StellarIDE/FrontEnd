@@ -19,7 +19,6 @@ function App() {
             path={"/dashboard/containers"}
             element={<ContainerListPage />}
           />
-
           <Route path={"/dashboard/profile"} element={<ProfilePage />} />
           <Route
             path={"/container/:containerId"}

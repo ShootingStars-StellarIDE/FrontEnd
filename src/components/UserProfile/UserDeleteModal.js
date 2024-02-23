@@ -3,6 +3,7 @@ import * as auth from "../../apis/auth";
 import { useNavigate } from "react-router-dom";
 import "../../styles/DeleteUserModal.css";
 import Loading from "../Loading";
+import axios from "axios";
 
 const UserDeleteModal = ({ isOpen, close }) => {
   const [password, setPassword] = useState("");
@@ -11,6 +12,7 @@ const UserDeleteModal = ({ isOpen, close }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   let isFirstLoading = useRef(true);
+  const token = localStorage.getItem("Authorization");
 
   if (!isOpen) return null;
 
@@ -23,7 +25,11 @@ const UserDeleteModal = ({ isOpen, close }) => {
       setIsLoading(true); // 데이터 불러오기 시작
     }
     try {
-      const checkPassword = await auth.checkPassword(password);
+      const checkPassword = await axios.post(
+        `./api/auth/checkPassword`,
+        { password },
+        { headers: { Authorization: token } }
+      );
       console.log(checkPassword);
       if (checkPassword.status === 200) {
         console.log("인증 완료");
@@ -87,11 +93,13 @@ const UserDeleteModal = ({ isOpen, close }) => {
   };
 
   const onClickDeletePassWord = async () => {
-    if (isFirstLoading.current) {
-      setIsLoading(true); // 데이터 불러오기 시작
-    }
+    console.log("onClickDeletePassWord called");
+    setIsLoading(true); // 로딩 시작
+    console.log("Loading started");
     try {
-      const deleteUser = await auth.deleteUser();
+      const deleteUser = await axios.delete(`/api/auth/delete/user`, {
+        headers: { Authorization: token },
+      });
       console.log(deleteUser);
       if (deleteUser.status === 200) {
         localStorage.removeItem("Authorization");
@@ -157,10 +165,9 @@ const UserDeleteModal = ({ isOpen, close }) => {
         console.error(errorRes.description);
       }
     } finally {
-      if (isFirstLoading) {
-        setIsLoading(false); // 데이터 불러오기 완료
-        isFirstLoading.current = false;
-      }
+      setIsLoading(false);
+      console.log("Loading finished");
+      isFirstLoading.current = false;
     }
   };
   if (isLoading) {
@@ -171,6 +178,7 @@ const UserDeleteModal = ({ isOpen, close }) => {
       <div className="modal-backdrop">
         <div className="modal">
           <h3 className="title">회원 탈퇴</h3>
+
           <div className="error">{errorMsg}</div>
           <h3 className="password-recheck">비밀번호 확인</h3>
           <div className="password-check">
@@ -185,6 +193,9 @@ const UserDeleteModal = ({ isOpen, close }) => {
               확인하기
             </button>
           </div>
+          <h6 style={{ color: "red", margin: 0 }}>
+            회원 탈퇴시, 기존 회원의 정보와 컨테이너 목록이 사라집니다.
+          </h6>
           <div className="modal-button-container">
             <button
               className="buttons-delete"
