@@ -16,6 +16,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import FolderIcon from "@mui/icons-material/Folder";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+
 import ChatBubble from "../components/ContainerList/ChatBubble";
 
 import "../styles/ContainerEditPage.css";
@@ -27,26 +28,24 @@ function ContainerEditPage() {
   const tabName = useRef(null);
 
   const [treeWidth, setTreeWidth] = useState("20%");
-  const [resultHeight, setResultHeight] = useState("30%");
   const [isDragging, setIsDragging] = useState(false);
   const minTreeWidth = 100;
-  const minResultHeight = 100;
-
-  const [selectedItemPath, setSelectedItemPath] = useState(null);
 
   const [treeData, setTreeData] = useState(null);
   const [fileType, setFileType] = useState("");
-  const [inputValue, setInputValue] = useState("");
+  const [selectedItemPath, setSelectedItemPath] = useState([]);
   const [execResult, setExecResult] = useState("환영합니다");
 
   const [editors, setEditors] = useState([]);
   const editorRef = useRef(null);
   const editorValue = useRef(null);
   const yorkieDoc = useRef(null);
+  const yorkieClient = useRef(null);
   const [updateTimeout, setUpdateTimeout] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  let isFirstLoading = useRef(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalAction, setModalAction] = useState(null);
 
   const token = localStorage.getItem("Authorization");
 
@@ -73,6 +72,7 @@ function ContainerEditPage() {
 
   // 파일 트리 조회
   const fetchTreeData = async () => {
+    setIsLoading(true);
     const res = await axios.get(
       `api/container/treeInfo/` + params.containerId,
       {
@@ -81,6 +81,7 @@ function ContainerEditPage() {
     );
     if (res.status === 200) {
       setTreeData(res.data);
+      setIsLoading(false);
     }
   };
 
@@ -120,7 +121,11 @@ function ContainerEditPage() {
               display: "flex",
               alignItems: "center",
               backgroundColor:
-                selectedItemPath === item.path ? "#04395E" : "transparent",
+                selectedItemPath.length === 0
+                  ? "transparent"
+                  : selectedItemPath.path === item.path
+                  ? "#04395E"
+                  : "transparent",
             }}
           >
             <IconButton
@@ -171,7 +176,11 @@ function ContainerEditPage() {
           marginTop: "8px",
           marginLeft: "10px",
           backgroundColor:
-            selectedItemPath === item.path ? "#04395E" : "transparent",
+            selectedItemPath.length === 0
+              ? "transparent"
+              : selectedItemPath.path === item.path
+              ? "#04395E"
+              : "transparent",
         }}
         onClick={() => onNameClick(item)}
       >
@@ -194,6 +203,7 @@ function ContainerEditPage() {
 
   // 파일 내용 조회
   const fetchFileData = async (filePath) => {
+    setIsLoading(true);
     const res = await axios.get(
       `/api/container/fileContent?containerId=` +
         params.containerId +
@@ -205,23 +215,28 @@ function ContainerEditPage() {
     );
 
     if (res.status === 200) {
+      setIsLoading(false);
       return res.data;
     }
   };
 
   // 파일 저장
   const handleSaveFile = async () => {
-    if (!selectedItemPath) {
-      alert("파일을 선택해주세요.");
+    if (editors.length === 0 || activeTab < 0 || activeTab >= editors.length) {
+      alert("탭을 열어주세요");
       return;
     }
 
+    setIsLoading(true);
+
     const containerId = params.containerId;
-    const path = selectedItemPath.substring(
-      selectedItemPath.indexOf("/"),
-      selectedItemPath.lastIndexOf("/") + 1
+    const activeEditor = editors[activeTab];
+    const realPath = activeEditor.path.replace(/\-/g, "/");
+    const path = realPath.substring(
+      realPath.indexOf("/"),
+      realPath.lastIndexOf("/") + 1
     );
-    const fileName = selectedItemPath.split("/").pop();
+    const fileName = realPath.split("/").pop();
     const fileContent = editorRef.current?.getValue();
 
     const res = await axios.post(
@@ -234,6 +249,7 @@ function ContainerEditPage() {
 
     if (res.status === 200) {
       alert("파일이 저장되었습니다.");
+      setIsLoading(false);
     } else if (res.data.code === "1201") {
       alert("존재하지 않는 사용자입니다.");
     } else if (res.data.code === "2200") {
@@ -247,20 +263,26 @@ function ContainerEditPage() {
 
   // 컨테이너 실행
   const handleRun = async () => {
-    if (!selectedItemPath) {
-      alert("파일을 선택해주세요.");
+    if (editors.length === 0 || activeTab < 0 || activeTab >= editors.length) {
+      alert("탭을 열어주세요");
       return;
     }
+
+    setIsLoading(true);
+
     const containerId = params.containerId;
-    let path = selectedItemPath.split("/").pop();
+    const activeEditor = editors[activeTab];
+    const realPath = activeEditor.path.replace(/\-/g, "/");
+    let path;
+    let parts = realPath.split("/");
 
     if (fileType === "JAVA") {
-      // 배열
-      let parts = selectedItemPath.split("/");
       // 마지막 부분에서 java 제거
       parts[parts.length - 1] = parts[parts.length - 1].replace(".java", "");
       // 그 전 디렉토리 + 파일이름
       path = parts.slice(2, parts.length).join("/");
+    } else {
+      path = parts.slice(1, parts.length).join("/");
     }
 
     const res = await axios.post(
@@ -272,101 +294,270 @@ function ContainerEditPage() {
     );
 
     if (res.status === 200) {
-      alert("실행에 성공했습니다.");
       setExecResult(res.data);
       fetchTreeData();
+      setIsLoading(false);
+    } else {
+      setExecResult("실행에 실패했습니다.");
     }
   };
 
-  // 파일 생성 API
-  const handleCreateFile = async () => {
-    if (!selectedItemPath) {
+  // 파일, 디렉토리 삭제
+  const handleDelete = async () => {
+    if (selectedItemPath.length === 0) {
       alert("파일이나 디렉토리를 선택해주세요.");
       return;
     }
 
-    const containerId = params.containerId;
-    const path = selectedItemPath.substring(
-      selectedItemPath.indexOf("/"),
-      selectedItemPath.lastIndexOf("/") + 1
-    );
-    const fileName = inputValue;
-    console.log(path, fileName);
+    const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
+    if (!isConfirmed) {
+      return;
+    }
 
-    // fetchTreeData
+    setIsLoading(true);
+
+    const containerId = params.containerId;
+    const fileName = selectedItemPath.path.split("/").pop();
+    const directoryName = selectedItemPath.path.split("/").pop();
+    const path = selectedItemPath.path.substring(
+      selectedItemPath.path.indexOf("/"),
+      selectedItemPath.path.lastIndexOf("/") + 1
+    );
+
+    if (selectedItemPath.type === "file") {
+      const res = await axios.delete(
+        `/api/container/deleteFile?containerId=` +
+          containerId +
+          `&path=` +
+          path +
+          `&fileName=` +
+          fileName,
+        {
+          headers: { Authorization: token },
+        }
+      );
+
+      if (res.status === 200) {
+        yorkieDoc.current.update((root) => {
+          root.content = "";
+        });
+        await yorkieClient.current.detach(yorkieDoc.current);
+
+        const deletedPath = selectedItemPath.path.replace(/\//g, "-");
+        const tabIndex = editors.findIndex(
+          (editor) => editor.path === deletedPath
+        );
+        if (tabIndex !== -1) {
+          handleCloseTab(tabIndex);
+        }
+        fetchTreeData();
+        alert("삭제되었습니다.");
+      }
+    } else {
+      const res = await axios.delete(
+        `/api/container/deleteDirectory?containerId=` +
+          containerId +
+          `&path=` +
+          path +
+          `&directoryName=` +
+          directoryName,
+        {
+          headers: { Authorization: token },
+        }
+      );
+
+      if (res.status === 200) {
+        fetchTreeData();
+        alert("삭제에 성공했습니다.");
+      }
+    }
   };
 
-  // 파일 수정
-  // /api/container/renameFile
-  // POST
-  // "containerId": 컨테이너 고유번호,
-  // "currentPath" : 이동할 파일경로,
-  // "movedPath": 이동될 경로,
-  // "fileName" : 파일의 이름
-  // 경로 예시
-  // 생성될 파일의 절대경로가 /containerName/test.py 라면
-  // -> path 의 값은 "/" fileName의 값은 "test.py" 로 보내주시면 됩니다.
-  // 생성될 파일의 절대경로가 /containerName/src/project/test.java 라면
-  // -> path 의 값은 "/src/project/" fileName의 값은 "test.java" 로 보내주시면 됩니다.
+  const InputModal = ({ isOpen, onClose, onSubmit }) => {
+    const [input, setInput] = useState("");
 
-  // 파일 삭제
-  // /api/container/deleteFile
-  // DELETE
-  // "containerId": 컨테이너 고유번호,
-  // "path" : 파일경로,
-  // "fileName" : 파일의 이름
-  // }
-  // 경로 예시
-  // 생성될 파일의 절대경로가 /containerName/test.py 라면
-  // -> path 의 값은 "/" fileName의 값은 "test.py" 로 보내주시면 됩니다.
-  // 생성될 파일의 절대경로가 /containerName/src/project/test.java 라면
-  // -> path 의 값은 "/src/project/" fileName의 값은 "test.java" 로 보내주시면 됩니다.
+    const handleSubmit = () => {
+      onSubmit(input);
+      onClose();
+    };
+
+    if (!isOpen) return null;
+
+    return (
+      <>
+        {/* 오버레이 */}
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.5)", // 반투명 배경
+            zIndex: 999,
+          }}
+          onClick={onClose}
+        ></div>
+
+        {/* 모달 창 */}
+        <div
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            width: "20%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "#363636",
+            padding: "16px",
+            zIndex: 1000,
+            borderRadius: "8px",
+          }}
+        >
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            style={{
+              width: "100%",
+              marginBottom: "16px",
+            }}
+          />
+          <div style={{ textAlign: "right" }}>
+            <button
+              className="input-modal-button"
+              style={{
+                backgroundColor: "#4CAF50",
+                color: "white",
+                border: "none",
+                padding: "6px 10px",
+                marginRight: "10px",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+              onClick={handleSubmit}
+            >
+              제출
+            </button>
+            <button
+              className="input-modal-button"
+              style={{
+                backgroundColor: "#f44336",
+                color: "white",
+                border: "none",
+                padding: "6px 10px",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+              onClick={onClose}
+            >
+              취소
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  const handleCreateFileClick = () => {
+    if (selectedItemPath.length === 0) {
+      alert("파일이나 디렉토리를 선택해주세요.");
+      return;
+    }
+
+    setModalAction("createFile");
+    setIsModalOpen(true);
+  };
+
+  const handleCreateDirClick = () => {
+    if (selectedItemPath.length === 0) {
+      alert("파일이나 디렉토리를 선택해주세요");
+      return;
+    }
+
+    setModalAction("createDir");
+    setIsModalOpen(true);
+  };
+
+  // 파일 생성
+  const handleCreateFile = async (value) => {
+    const containerId = params.containerId;
+    const fileName = value;
+    let path;
+
+    setIsLoading(true);
+
+    if (selectedItemPath.type === "directory") {
+      path =
+        "/" +
+        selectedItemPath.path.substring(
+          selectedItemPath.path.indexOf("/") + 1
+        ) +
+        "/";
+    } else {
+      path = selectedItemPath.path.substring(
+        selectedItemPath.path.indexOf("/"),
+        selectedItemPath.path.lastIndexOf("/") + 1
+      );
+    }
+
+    const res = await axios.post(
+      `/api/container/createFile`,
+      { containerId, path, fileName },
+      {
+        headers: { Authorization: token },
+      }
+    );
+
+    if (res.status === 200) {
+      fetchTreeData();
+      alert("파일이 생성되었습니다.");
+    }
+  };
 
   // 디렉토리 생성
-  // `/api/container/createDirectory`
-  // POST
-  // "containerId": 컨테이너 고유번호,
-  // "path" : 파일경로,
-  // "directoryName" : 디렉토리 이름
-  // 경로 예시
-  // 생성될 디렉토리의 절대경로가 /containerName/test 라면
-  // -> path 의 값은 "/" directoryName의 값은 "test" 로 보내주시면 됩니다.
-  // 생성될 파일의 절대경로가 /containerName/src/project/test 라면
-  // -> path 의 값은 "/src/project/" directoryName의 값은 "test" 로 보내주시면 됩니다.
+  const handleCreateDir = async (value) => {
+    const containerId = params.containerId;
+    const directoryName = value;
+    let path;
 
-  // 디렉토리 수정
-  // /api/container/renameDirectory
-  // POST
-  // "containerId": 컨테이너 고유번호,
-  // "currentPath" : 이동할 파일경로,
-  // "movedPath": 이동될 경로,
-  // "directoryName" : 디렉토리 이름
-  // 경로 예시
-  // 생성될 디렉토리의 절대경로가 /containerName/test 라면
-  // -> path 의 값은 "/" directoryName의 값은 "test" 로 보내주시면 됩니다.
-  // 생성될 파일의 절대경로가 /containerName/src/project/test 라면
-  // -> path 의 값은 "/src/project/" directoryName의 값은 "test" 로 보내주시면 됩니다.
+    setIsLoading(true);
 
-  // 디렉토리 삭제
-  // /api/container/deleteDirectory
-  // DELETE
-  // "containerId": 컨테이너 고유번호,
-  // "path" : 파일경로,
-  // "directoryName" : 디렉토리 이름
-  // 경로 예시
-  // 생성될 디렉토리의 절대경로가 /containerName/test 라면
-  // -> path 의 값은 "/" directoryName의 값은 "test" 로 보내주시면 됩니다
-  // 생성될 파일의 절대경로가 /containerName/src/project/test 라면
-  // -> path 의 값은 "/src/project/" directoryName의 값은 "test" 로 보내주시면 됩니다.
+    if (selectedItemPath.type === "directory") {
+      path =
+        "/" +
+        selectedItemPath.path.substring(
+          selectedItemPath.path.indexOf("/") + 1
+        ) +
+        "/";
+    } else {
+      path = selectedItemPath.path.substring(
+        selectedItemPath.path.indexOf("/"),
+        selectedItemPath.path.lastIndexOf("/") + 1
+      );
+    }
 
-  // 파일, 디렉토리 클릭
+    const res = await axios.post(
+      `/api/container/createDirectory`,
+      { containerId, path, directoryName },
+      {
+        headers: { Authorization: token },
+      }
+    );
+
+    if (res.status === 200) {
+      fetchTreeData();
+      alert("디렉토리가 생성되었습니다.");
+    }
+  };
+
+  // 트리 아이템 클릭
   const onNameClick = async (item) => {
     const { name, type, path } = item;
 
-    if (selectedItemPath === path) {
-      setSelectedItemPath(null); // 이미 선택된 경우 선택 해제
+    if (selectedItemPath && selectedItemPath.path === path) {
+      setSelectedItemPath([]); // 이미 선택된 경우 선택 해제
     } else {
-      setSelectedItemPath(path); // 선택되지 않은 경우 선택
+      setSelectedItemPath(item); // 선택되지 않은 경우 선택
     }
 
     // 탭이 6개 이상
@@ -386,7 +577,7 @@ function ContainerEditPage() {
             key={name}
             value={editorValue.current}
             width="100%"
-            height="75vh"
+            height="60vh"
             theme="vs-dark"
             defaultLanguage={fileType === "JAVA" ? "java" : "python"}
             onMount={handleEditorDidMount}
@@ -448,26 +639,9 @@ function ContainerEditPage() {
     }
   };
 
-  const startResizeResult = (event) => {
-    setIsDragging(true);
-    document.addEventListener("mousemove", resizeResult);
-    document.addEventListener("mouseup", stopResize);
-  };
-
-  const resizeResult = (event) => {
-    const newHeight = window.innerHeight - event.clientY;
-    if (
-      newHeight > minResultHeight &&
-      newHeight < window.innerHeight - minResultHeight
-    ) {
-      setResultHeight(newHeight);
-    }
-  };
-
   const stopResize = () => {
     setIsDragging(false);
     document.removeEventListener("mousemove", resizeTree);
-    document.removeEventListener("mousemove", resizeResult);
     document.removeEventListener("mouseup", stopResize);
   };
 
@@ -500,7 +674,7 @@ function ContainerEditPage() {
             key={name}
             value={editorValue.current}
             width="100%"
-            height="75vh"
+            height="60vh"
             theme="vs-dark"
             defaultLanguage={fileType === "JAVA" ? "java" : "python"}
             onMount={handleEditorDidMount}
@@ -565,10 +739,18 @@ function ContainerEditPage() {
       createYorkieDoc(tabName.current);
     }
   }, []);
+  // containerName-filePath로 doc를 생성
+  useEffect(() => {
+    if (tabName.current !== null) {
+      createYorkieDoc(tabName.current);
+    }
+  }, []);
 
   const createYorkieDoc = async (docName) => {
-    await initYorkie(docName).then(async ({ doc }) => {
+    setIsLoading(true);
+    await initYorkie(docName).then(async ({ doc, client }) => {
       yorkieDoc.current = doc;
+      yorkieClient.current = client;
 
       // 문서 변경 감지
       doc.subscribe((event) => {
@@ -607,6 +789,7 @@ function ContainerEditPage() {
         const response = await fetchFileData(result);
         editorValue.current = response;
       }
+      setIsLoading(false);
     });
   };
 
@@ -630,25 +813,91 @@ function ContainerEditPage() {
     setUpdateTimeout(timeoutId);
   };
 
+  //   const handleRenameClick = () => {
+  //     if (selectedItemPath.length === 0) {
+  //       alert("파일이나 디렉토리를 선택해주세요");
+  //       return;
+  //     }
+
+  //     setModalAction("edit");
+  //     setIsModalOpen(true);
+  //   };
+
+  // 파일 수정
+  //   const handleRename = async (value) => {
+  //     const containerId = params.containerId;
+  //     const path = selectedItemPath.path.substring(
+  //       selectedItemPath.path.indexOf("/"),
+  //       selectedItemPath.path.lastIndexOf("/") + 1
+  //     );
+  //     const fileName = selectedItemPath.name;
+  //     const directoryName = selectedItemPath.name;
+  //     const changeName = value;
+
+  //     if (selectedItemPath.type === "file") {
+  //       const res = await axios.post(
+  //         `/api/container/renameFile`,
+  //         { containerId, path, fileName, changeName },
+  //         {
+  //           headers: { Authorization: token },
+  //         }
+  //       );
+
+  //       if (res.status === 200) {
+  //         alert("파일 수정에 성공했습니다.");
+  //         fetchTreeData();
+  //       }
+  //     } else {
+  //       const res = await axios.post(
+  //         `/api/container/renameDirectory`,
+  //         { containerId, path, directoryName, changeName },
+  //         {
+  //           headers: { Authorization: token },
+  //         }
+  //       );
+
+  //       if (res.status === 200) {
+  //         alert("디렉토리 수정에 성공했습니다.");
+  //         fetchTreeData();
+  //       }
+  //     }
+  //   };
+
+  // 로딩 모달
+  const LoadingModal = ({ isLoading }) => {
+    if (!isLoading) return null;
+
+    return (
+      <div className="loading-modal">
+        <div className="loading-spinner"></div>
+        <p className={"loading-p"}>데이터를 불러오는 중입니다...</p>
+      </div>
+    );
+  };
+
   return (
     <div className="edit-page">
       <div className="tree-container" style={{ width: treeWidth }}>
         <div className="tree-bar">
-          <IconButton sx={{ color: "white" }}>
-            <CreateNewFolderIcon fontSize="medium" />
-          </IconButton>
-          <IconButton onClick={handleCreateFile} sx={{ color: "white" }}>
-            <NoteAddIcon fontSize="medium" />
-          </IconButton>
-          <IconButton sx={{ color: "white" }}>
+          <div>
+            <IconButton onClick={handleCreateDirClick} sx={{ color: "white" }}>
+              <CreateNewFolderIcon fontSize="medium" />
+            </IconButton>
+            <IconButton onClick={handleCreateFileClick} sx={{ color: "white" }}>
+              <NoteAddIcon fontSize="medium" />
+            </IconButton>
+            {/* <IconButton onClick={handleRenameClick} sx={{ color: "white" }}>
             <EditIcon fontSize="medium" />
-          </IconButton>
-          <IconButton sx={{ color: "white" }}>
-            <DeleteIcon fontSize="medium" />
-          </IconButton>
-          <IconButton onClick={handleRefresh} sx={{ color: "white" }}>
-            <RefreshIcon fontSize="medium" />
-          </IconButton>
+          </IconButton> */}
+            <IconButton onClick={handleDelete} sx={{ color: "white" }}>
+              <DeleteIcon fontSize="medium" />
+            </IconButton>
+          </div>
+          <div>
+            <IconButton onClick={handleRefresh} sx={{ color: "white" }}>
+              <RefreshIcon fontSize="medium" />
+            </IconButton>
+          </div>
         </div>
         <div className="tree-main">
           <Tree data={treeData} />
@@ -673,21 +922,40 @@ function ContainerEditPage() {
           </div>
         ) : (
           <div className="editor-placeholder">
-            <div className="editor-image">나눔고딕</div>
+            <div className="editor-image">
+              {/* <img src="f" /> */}
+              <p>Stellar-IDE ver.1</p>
+              <p>주의사항</p>
+              <p>- 실행하기 전에 꼭 저장해주세요.</p>
+              <p>- 파일이나 디렉토리 이름은 중복이 불가능합니다.</p>
+              <p>- 새로고침 버튼을 누르면 파일을 다시 조회합니다.</p>
+              <p>
+                - 컨테이너명, src, project 디렉토리를 삭제할 시 문제가 발생할 수
+                있습니다.
+              </p>
+            </div>
           </div>
         )}
-        <div
-          className="resize-handle-horizontal"
-          onMouseDown={startResizeResult}
-          style={{ top: `calc(100% - ${resultHeight})` }}
-        />
-        <div
-          className="result"
-          style={{ height: resultHeight, color: "#4ed9a5" }}
-        >
+        <div className="result">
           <pre>{execResult}</pre>
         </div>
         <ChatBubble containerId={params.containerId} />
+        <LoadingModal isLoading={isLoading} />
+        <InputModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={(value) => {
+            setIsModalOpen(false);
+            if (modalAction === "createFile") {
+              handleCreateFile(value);
+            } else if (modalAction === "createDir") {
+              handleCreateDir(value);
+            }
+            // else if (modalAction === "edit") {
+            //   handleRename(value);
+            // }
+          }}
+        />
       </div>
     </div>
   );
