@@ -39,6 +39,10 @@ function UserProfile({
   const openImgModal = () => setIsImgOpen(true);
   const closeImgModal = () => setIsImgOpen(false);
 
+  const [isOpen2, setIsOpen2] = useState(false);
+  const openModal2 = () => setIsOpen2(true);
+  const closeModal2 = () => setIsOpen2(false);
+
   //----------------------------------------------------------------비밀번호 관련
   const onChangePassword = (event) => {
     setcurrentPassword(event.target.value);
@@ -274,7 +278,7 @@ function UserProfile({
   };
 
   const UserDelete = () => {
-    openModal(); // 모달 열기
+    openModal2(); // 모달 열기
   };
 
   const [isFormValid, setIsFormValid] = useState(false);
@@ -432,7 +436,7 @@ function UserProfile({
           </div>
         </div>
       </form>
-      <UserDeleteModal isOpen={isOpen} close={closeModal} />
+      <UserDeleteModal isOpen={isOpen2} close={closeModal2} />
     </div>
   );
 }

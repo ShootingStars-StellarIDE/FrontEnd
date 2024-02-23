@@ -45,7 +45,7 @@ function ProfileImgModal({ isOpen, close, profileimgurl }) {
       );
       if (response.status == 200) {
         close();
-        navigate("/dashboard/profile");
+        window.location.reload();
       }
       return response;
     } catch (error) {
@@ -81,7 +81,7 @@ function ProfileImgModal({ isOpen, close, profileimgurl }) {
         // 저장소 연결에 실패하였습니다.
         console.error(error.response.data.description);
       }
-    }
+    } 
   };
 
   // 이미지 미리보기
