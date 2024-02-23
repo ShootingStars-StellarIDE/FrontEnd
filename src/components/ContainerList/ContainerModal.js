@@ -18,7 +18,6 @@ function ContainerModal({ isOpen, close, addOwner }) {
 
   //----------------------------------------------------------------컨테이너 제목
   const onChangeContainerName = (event) => {
-    console.log(event.target.value);
     setContainerName(event.target.value);
   };
 
@@ -97,9 +96,7 @@ function ContainerModal({ isOpen, close, addOwner }) {
     const type = containerType;
     const name = form.containerName.value;
     const desc = form.containerDescription.value;
-    console.log(type);
-    console.log(name);
-    console.log(desc);
+
     let isValid = true;
 
     // type 검사
@@ -119,7 +116,6 @@ function ContainerModal({ isOpen, close, addOwner }) {
     if (!isValid) {
       return;
     } else {
-      console.log(type, name, desc);
       createContainerApi(type, name, desc);
     }
   };

@@ -1,0 +1,69 @@
+.Signup-Form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transform: translate(0%, 0%);
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 300px; 
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-image-placeholder {
+  height: 96px;
+  width: 96px;
+  background-color: #f0f0f0;
+  border-radius: 30%;
+  margin: 20px 0px;
+}
+
+.userimg {
+  width: 96px;
+  height: 96px;
+}
+
+.imgsubmit {
+  margin-top: 10px;
+  height: auto;
+  cursor: pointer;
+}
+
+.buttons {
+  margin-top: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.buttons button {
+  height: 40px;
+  width: auto;
+  border: none;
+  border-radius: 50px;
+  background-color: #4ed9a5;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}

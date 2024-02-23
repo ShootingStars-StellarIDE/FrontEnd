@@ -18,7 +18,7 @@ function Sidebar({ nickname, profileimgurl }) {
   };
 
   const DmUserClick = () => {
-    alert("dm창 띄우기");
+    alert("현재 DM 기능 개발중입니다! :)");
   };
 
   const dmusers = ["IU", "Jungkook", "Eunha", "Eunji"];
@@ -93,15 +93,18 @@ function Sidebar({ nickname, profileimgurl }) {
       {/* 프로필 카드 */}
       <div className="profilecard">
         <div className="picdisplay">
-          <div className="pic" onClick={goToProfile}>
-            <img
+          <div className="pic"
+            onClick={goToProfile}
+          >
+            {profileimgurl && 
+            <img 
               src={
-                profileimgurl === null
-                  ? "https://img.sbs.co.kr/newsnet/etv/upload/2022/09/19/30000790950.jpg"
-                  : profileimgurl
+              profileimgurl === null
+                ? "https://img.sbs.co.kr/newsnet/etv/upload/2022/09/19/30000790950.jpg"
+                : profileimgurl + "?cache=" + Math.random()
               }
               alt="UserIcon"
-            />
+           />}
           </div>
           <div className="welcomement">
             <p className="userNickname">{nickname} 님</p>
@@ -114,9 +117,9 @@ function Sidebar({ nickname, profileimgurl }) {
       <div className="conspace">
         <details open>
           <summary>Containers</summary>
-          <div onClick={goToContainerList}>모든 컨테이너</div>
-          <div>내 컨테이너</div>
-          <div>공유 컨테이너</div>
+          <div onClick={goToContainerList}>컨테이너 바로가기</div>
+          {/* <div>내 컨테이너</div>
+          <div>공유 컨테이너</div> */}
         </details>
       </div>
 

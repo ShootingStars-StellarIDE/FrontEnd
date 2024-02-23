@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import * as auth from "../../apis/auth";
 import selectpic from "../../assets/selectpic.svg";
+import ProfileImgModal from "./ProfileImgModal";
 import "../../styles/UserProfile.css";
 import UserDeleteModal from "./UserDeleteModal";
 import Loading from "../Loading";
-// import { setAccessToken } from "../../Store/UserSlice";
 
 function UserProfile({
   email,
@@ -28,6 +28,14 @@ function UserProfile({
   const [renewPasswordError, setRenewPasswordError] = useState(" ");
   const [isLoading, setIsLoading] = useState(false);
   let isFirstLoading = useRef(true);
+
+  // 프로필 사진
+  // const [Image, setImage] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
+  
+  // 모달
+  const [isOpen, setIsOpen] = useState(false);
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
 
   //----------------------------------------------------------------비밀번호 관련
   const onChangePassword = (event) => {
@@ -239,10 +247,6 @@ function UserProfile({
     return response;
   };
 
-  const [isOpen, setIsOpen] = useState(false);
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
-
   const UserDelete = () => {
     openModal(); // 모달 열기
   };
@@ -264,6 +268,12 @@ function UserProfile({
 
   return (
     <div className="contents">
+      <ProfileImgModal 
+        isOpen={isOpen} 
+        close={closeModal} 
+        profileimgurl = {profileimgurl}  
+      />
+
       <div className="contents-header">
         <div className="user-profile-display">
           <p className="userNickname">{nickname}</p>
@@ -284,19 +294,24 @@ function UserProfile({
         <div className="profile-card">
           <div className="profile-image-placeholder">
             {/* 프로필 사진 */}
-
-            <img
-              src={
-                profileimgurl === null
-                  ? "https://img.sbs.co.kr/newsnet/etv/upload/2022/09/19/30000790950.jpg"
-                  : profileimgurl
-              }
-              alt="userimg"
-              className="userimg"
-            />
+              {profileimgurl && 
+              <img
+                src={
+                  profileimgurl === null
+                    ? "https://img.sbs.co.kr/newsnet/etv/upload/2022/09/19/30000790950.jpg"
+                    : profileimgurl + "?cache=" + Math.random()
+                }
+                alt="userimg"
+                className="userimg"
+              />}
             {/* 사진 변경 뱃지 */}
             <div className="notification-badge">
-              <img src={selectpic} alt="selectpic" className="pic-edit-badge" />
+              <img 
+                src={selectpic} 
+                alt="selectpic" 
+                className="pic-edit-badge"
+                onClick={openModal}
+              />
             </div>
           </div>
 

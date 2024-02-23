@@ -42,6 +42,10 @@ function ContainerList({ nickname }) {
   const [filteredOwnCards, setFilteredOwnCards] = useState(owncards);
   const [filteredSharedCards, setFilteredSharedCards] = useState(sharedcards);
 
+  // 소유,공유 컨테이너 렌더링 
+  const [ownConVisible, setownConVisible] = useState(true);
+  const [sharedConVisible, setsharedConVisible] = useState(true);
+
   useEffect(() => {
     // 페이지 로드시 모든 컨테이너 정보 불러오기
     const containerSearchApi = async () => {
@@ -138,6 +142,22 @@ function ContainerList({ nickname }) {
     return str.length > num ? str.slice(0, num) + "..." : str;
   };
 
+  // 소유, 공유 컨테이너 렌더링 함수
+  const ContainerVisible = (select) => {
+    if(select === "all") {
+      setownConVisible(true);
+      setsharedConVisible(true);
+    }
+    if(select === "own") {
+      setownConVisible(true);
+      setsharedConVisible(false);
+    }
+    if(select === "shared") {
+      setownConVisible(false);
+      setsharedConVisible(true);
+    }
+  }
+
   const addOwner = (res) => {
     setOwnCards((prev) => [...prev, res]);
   };
@@ -223,11 +243,24 @@ function ContainerList({ nickname }) {
           </div>
 
           <div className="own-shared-containers">
-            <div className="own-containers">
-              <p>보유한 컨테이너</p>
+            <div 
+              className="all-containers"
+              onClick={() => {ContainerVisible("all")}}
+            >
+              <p>모든 컨테이너</p>
             </div>
-            <div className="shared-containers">
-              <p>공유된 컨테이너</p>
+
+            <div 
+              className="own-containers"
+              onClick={() => {ContainerVisible("own")}}
+            >
+              <p>내 컨테이너</p>
+            </div>
+            <div 
+              className="shared-containers"
+              onClick={() => {ContainerVisible("shared")}}
+            >
+              <p>공유받은 컨테이너</p>
             </div>
           </div>
 
@@ -243,100 +276,116 @@ function ContainerList({ nickname }) {
         </div>
       </div>
 
-      <h1>내 컨테이너</h1>
-      {/* 컨테이너 목록 */}
-      <div className="container-cards">
-        {/* 컨테이너 추가 버튼 */}
-        <div onClick={openModal}>+</div>
 
-        {filteredOwnCards.map((item, owncards) => (
-          <div className="concards" key={owncards}>
-            <div className="conname-line">
-              <div className="conname">
+      {ownConVisible && <h1>내 컨테이너</h1>}
+
+      {ownConVisible && 
+        <div className="container-cards">
+          {/* 컨테이너 추가 버튼 */}
+          <div onClick={openModal}>+</div>
+
+          {filteredOwnCards.map((item, owncards) => (
+            <div className="concards" key={owncards}>
+              <div className="conname-line">
+                <div className="conname">
                 {item && item.name && cutString(item.name, 20)}
               </div>
-              <div className="esd-icons">
-                <img
+                <div className="esd-icons">
+                  <img
                   src={edteIcon}
                   alt="edit"
                   onClick={() => handleOpenEditModal(item)}
                 />
-                <img
+                  <img
                   src={shareIcon}
                   alt="share"
                   onClick={() => handleOpenShareModal(item)}
                 />
-                <img
+                  <img
                   src={deleteIcon}
                   alt="delete"
                   onClick={() => handleOpenDeleteModal(item)}
                 />
+                </div>
               </div>
-            </div>
-            <div className="typeline">
-              <div className="idelang">{item && item.type}</div>
-              <div className="createdTime">
-                생성:{" "}
+              <div className="typeline">
+                <div className="idelang">{item && item.type}</div>
+                <div className="createdTime">
+                  생성:{" "}
                 {item && item.createdTime && item.createdTime.split("T")[0]}
+                </div>
               </div>
-            </div>
-            <div className="nicknameline">
-              <div className="editUserUuid">
+              <div className="nicknameline">
+                <div className="editUserUuid">
                 {item && item.editUserNickname}
               </div>
-              <div className="lastModifiedTime">
-                수정:{" "}
+                <div className="lastModifiedTime">
+                  수정:{" "}
                 {item &&
                   item.lastModifiedTime &&
                   item.lastModifiedTime.split("T")[0]}
+                </div>
               </div>
-            </div>
-            <div className="condesc">
+              <div className="condesc">
               {item && item.description && cutString(item.description, 80)}
             </div>
-            <div className="idestart">시작하기</div>
-          </div>
-        ))}
-      </div>
+              <div 
+                className="idestart" 
+                onClick={() => navigate(`/container/:${item.containerId}`)}
+              > 
+                시작하기
+              </div>
+            </div>
+          ))}
+        </div>
+      }
 
-      <h1>공유받은 컨테이너</h1>
+      {sharedConVisible && <h1>공유받은 컨테이너</h1>}
 
-      <div className="container-cards-2">
-        {filteredSharedCards.map((item, sharedcards) => (
-          <div className="concards" key={sharedcards}>
-            <div className="conname-line">
-              <div className="conname">
+      {/* 공유 컨테이너 목록 */}
+      {sharedConVisible &&
+        <div className="container-cards-2">
+          {filteredSharedCards.map((item, sharedcards) => (
+            <div className="concards" key={sharedcards}>
+              <div className="conname-line">
+                <div className="conname">
                 {item && item.name && cutString(item.name, 20)}
               </div>
-              <div className="esd-icons">
-                <img src={edteIcon} alt="edit" />
+                <div className="esd-icons">
+                  <img src={edteIcon} alt="edit" />
+                </div>
               </div>
-            </div>
-            <div className="typeline">
-              <div className="idelang">{item && item.type && item.type}</div>
-              <div className="createdTime">
-                생성:{" "}
+              <div className="typeline">
+                <div className="idelang">{item && item.type}</div>
+                <div className="createdTime">
+                  생성:{" "}
                 {item && item.createdTime && item.createdTime.split("T")[0]}
+                </div>
               </div>
-            </div>
-            <div className="nicknameline">
-              <div className="editUserUuid">
-                {item && item.editUserNickname && item.editUserNickname}
+              <div className="nicknameline">
+                <div className="editUserUuid">
+                {item && item.editUserNickname}
               </div>
-              <div className="lastModifiedTime">
-                수정:{" "}
+                <div className="lastModifiedTime">
+                  수정:{" "}
                 {item &&
                   item.lastModifiedTime &&
                   item.lastModifiedTime.split("T")[0]}
+                </div>
               </div>
-            </div>
-            <div className="condesc">
+              <div className="condesc">
               {item && item.description && cutString(item.description, 80)}
             </div>
-            <div className="idestart">시작하기</div>
-          </div>
-        ))}
-      </div>
+              <div 
+                className="idestart" 
+                onClick={() => navigate(`/container/:${item.containerId}`)}
+              >
+                시작하기
+              </div>
+            </div>
+          ))}
+        </div>
+      }
 
       <ContainerModal addOwner={addOwner} isOpen={isOpen} close={closeModal} />
       <ContainerEdit
