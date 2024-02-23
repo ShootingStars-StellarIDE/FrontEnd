@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+
 .edit-page {
     display: flex;
     height: 100vh;
     color: white;
-  background-color: #181818;
+    background-color: #181818;
+    font-family: Consolas, "Nanum Gothic";
 }
 
 .tree-container,
@@ -13,15 +16,14 @@
 
 .tree-container {
     width: 20%;
-    border-right: 1px solid #333;
+    border-right: 2px solid #333;
     position: relative;
     min-height: 100%;
 }
 
 .tree-bar {
   padding: 16px;
-  border-bottom: 3px solid #333;
-  /* background-color: #333; */
+  border-bottom: 2px solid #333;
 }
 
 .tree-main {
@@ -58,21 +60,29 @@
   
 .tab-list {
     display: flex;
+    justify-content: space-between;
 }
+
+.tab-button {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
   
 .tab {
-    padding: 16px 6px 16px 16px;
+    padding: 25px 6px 24px 16px;
     border-right: 1px solid #333;
     cursor: pointer;
 }
   
 .tab.active {
     background-color: #252526;
-    border-bottom: 1px solid rgb(42, 122, 241); 
+    border-bottom: 2px solid rgb(42, 122, 241); 
 }
   
 .tab-panel {
-    border-top: 1px solid #333;
+    border-top: 2px solid #333;
 }
 
 .close-tab {
@@ -90,7 +100,7 @@
   padding: 20px;
   background-color: #181818;
   color: red;
-  border-top: 1px solid #333;
+  border-top: 2px solid #333;
   overflow: auto;
 }
 
