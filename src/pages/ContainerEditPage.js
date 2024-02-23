@@ -23,6 +23,7 @@ import "../styles/ContainerEditPage.css";
 
 function ContainerEditPage() {
   const params = useParams();
+  const params = useParams();
 
   const [activeTab, setActiveTab] = useState(0);
   const tabName = useRef(null);
@@ -732,6 +733,12 @@ function ContainerEditPage() {
     editorRef.current = editor;
   };
 
+  // containerName-filePath로 doc를 생성
+  useEffect(() => {
+    if (tabName.current !== null) {
+      createYorkieDoc(tabName.current);
+    }
+  }, []);
   // containerName-filePath로 doc를 생성
   useEffect(() => {
     if (tabName.current !== null) {

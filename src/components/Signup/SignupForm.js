@@ -66,30 +66,37 @@ const SignupForm = ({
         } catch (error) {
           if (error.response.data.code == 1001) {
             // 잘못된 형식의 이메일입니다.
+            alert(error.response.data.description);
             console.error(error.response.data.description);
           }
           //잘못된 형식의 닉네임입니다.
           else if (error.response.data.code == 1003) {
+            alert(error.response.data.description);
             console.error(error.response.data.description);
           }
           // 잘못된 형식의 비밀번호입니다.
           else if (error.response.data.code == 1004) {
+            alert(error.response.data.description);
             console.error(error.response.data.description);
           }
           //인증이 만료되었거나 인증되지 않은 이메일입니다.
           else if (error.response.data.code == 1102) {
+            alert(error.response.data.description);
             console.error(error.response.data.description);
           }
           //허용되지 않는 닉네임입니다.
           else if (error.response.data.code == 1303) {
+            alert(error.response.data.description);
             console.error(error.response.data.description);
           }
           //이미 사용중인 이메일입니다.
           else if (error.response.data.code == 1301) {
+            alert(error.response.data.description);
             console.error(error.response.data.description);
           }
           //이미 사용중인 닉네임입니다.
           else if (error.response.data.code == 1302) {
+            alert(error.response.data.description);
             console.error(error.response.data.description);
           }
         } finally {
@@ -104,9 +111,11 @@ const SignupForm = ({
       // 오류 처리
       if (error.response.data.code == 1301) {
         // 이미 사용중인 이메일입니다.
+        alert(error.response.data.description);
         console.error(error.response.data.description);
       } else if (error.response.data.code == 1001) {
         // 잘못된 형식의 이메일입니다.
+        alert(error.response.data.description);
         console.error(error.response.data.description);
       }
     } finally {
@@ -140,14 +149,17 @@ const SignupForm = ({
     } catch (error) {
       // 잘못된 형식의 이메일입니다.
       if (error.response.data.code == 1001) {
+        alert(error.response.data.description);
         console.error(error.response.data.description);
       }
       //잘못된 형식의 인증코드입니다.
       else if (error.response.data.code == 1002) {
+        alert(error.response.data.description);
         console.error(error.response.data.description);
       }
       //잘못된 키 혹은 잘못(만료) 된 인증 코드입니다.
       else if (error.response.data.code == 1101) {
+        alert(error.response.data.description);
         console.error(error.response.data.description);
       }
     } finally {
@@ -185,14 +197,17 @@ const SignupForm = ({
     } catch (error) {
       // 잘못된 형식의 이메일입니다.
       if (error.response.data.code == 1001) {
+        alert(error.response.data.description);
         console.error(error.response.data.description);
       }
       //허용되지 않는 닉네임입니다.
       else if (error.response.data.code == 1303) {
+        alert(error.response.data.description);
         console.error(error.response.data.description);
       }
       //이미 사용중인 닉네임입니다.
       else if (error.response.data.code == 1302) {
+        alert(error.response.data.description);
         console.error(error.response.data.description);
       }
     } finally {

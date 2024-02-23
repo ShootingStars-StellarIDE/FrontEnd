@@ -15,7 +15,7 @@
   background: white;
   padding: 30px;
   border-radius: 15px;
-  width: 400px; 
+  min-width: 400px;
 }
 
 .modal .buttons {

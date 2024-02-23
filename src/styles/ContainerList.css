@@ -78,8 +78,7 @@
   justify-content: start;
 }
 
-.own-containers,
-.shared-containers {
+.own-containers, .shared-containers, .all-containers {
   padding: 5px 10px;
   min-width: 102px;
   background-color: white;
@@ -93,8 +92,18 @@
   cursor: pointer;
 }
 
-.own-containers {
+.own-shared-containers div.selected{
+  border: 3px solid #4ed9a5;
+}
+
+.all-containers {
   margin: 0px 10px;
+}
+
+
+
+.own-containers {
+  margin-right: 10px;
 }
 
 .shared-containers {

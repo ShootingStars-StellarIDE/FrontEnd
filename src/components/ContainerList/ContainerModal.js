@@ -5,6 +5,7 @@ import javaIco from "../../assets/JAVA.svg";
 import pythonIco from "../../assets/python.svg";
 import * as auth from "../../apis/auth";
 import Loading from "../Loading";
+import axios from "axios";
 
 function ContainerModal({ isOpen, close, addOwner }) {
   // 컨테이너 정보
@@ -13,12 +14,12 @@ function ContainerModal({ isOpen, close, addOwner }) {
   const [containerDescription, setContainerDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   let isFirstLoading = useRef(true);
+  const token = localStorage.getItem("Authorization");
 
   if (!isOpen) return null;
 
   //----------------------------------------------------------------컨테이너 제목
   const onChangeContainerName = (event) => {
-    console.log(event.target.value);
     setContainerName(event.target.value);
   };
 
@@ -33,34 +34,17 @@ function ContainerModal({ isOpen, close, addOwner }) {
     setContainerType(lang); // 클릭된 언어를 상태 변수에 설정
   };
 
-  // 컨테이너 생성요청
-  // const createContainerApi = async (type, name, desc) => {
-  //   // if (isFirstLoading.current) {
-  //   //   setIsLoading(true); // 데이터 불러오기 시작
-  //   // }
-  //   let response = await auth.containerCreate(type, name, desc);
-  //   if (response.status === 200) {
-  //     addOwner(response.data);
-  //     close();
-  //   } else {
-  //     // console.error(error.response.data.description);
-  //     // if (isFirstLoading) {
-  //     //   setIsLoading(false); // 데이터 불러오기 완료
-  //     //   isFirstLoading.current = false;
-  //     // }
-  //   }
-  //   console.log(response);
-
-  //   return response;
-  // };
-
   // 컨테이너 수정요청
   const createContainerApi = async (type, name, desc) => {
-    if (isFirstLoading.current) {
+    {
       setIsLoading(true); // 데이터 불러오기 시작
     }
     try {
-      let response = await auth.containerCreate(type, name, desc);
+      let response = await axios.post(
+        `/api/container/create`,
+        { containerType, containerName, containerDescription },
+        { headers: { Authorization: token } }
+      );
       console.log(response);
       if (response.status === 200) {
         addOwner(response.data);
@@ -97,9 +81,7 @@ function ContainerModal({ isOpen, close, addOwner }) {
     const type = containerType;
     const name = form.containerName.value;
     const desc = form.containerDescription.value;
-    console.log(type);
-    console.log(name);
-    console.log(desc);
+
     let isValid = true;
 
     // type 검사
@@ -119,7 +101,6 @@ function ContainerModal({ isOpen, close, addOwner }) {
     if (!isValid) {
       return;
     } else {
-      console.log(type, name, desc);
       createContainerApi(type, name, desc);
     }
   };
@@ -147,7 +128,7 @@ function ContainerModal({ isOpen, close, addOwner }) {
           <h3>프로젝트 이름</h3>
           <input
             type="text"
-            placeholder="프로젝트 이름을 입력하세요"
+            placeholder="(영문,숫자 로 이루어진)프로젝트 이름을 입력하세요"
             name="containerName"
             value={containerName}
             onChange={onChangeContainerName}

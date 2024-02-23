@@ -4,9 +4,8 @@ import "../styles/Sidebar.css";
 import "../styles/ContainerList.css";
 import "../styles/UserProfile.css";
 import * as auth from "../apis/auth";
-
-import ContainerModal from "../components/ContainerList/ContainerModal";
 import "../styles/ContainerModal.css";
+import axios from "axios";
 
 import Sidebar from "../components/ContainerList/Sidebar";
 import ContainerList from "../components/ContainerList/ContainerList";
@@ -20,6 +19,7 @@ function ContainerListPage() {
   const toggleModal = () => {
     setModalOpen(!isModalOpen);
   };
+  const token = localStorage.getItem("Authorization");
 
   // 유저 정보
   const [userNickname, setUserNickname] = useState(""); // 닉네임
@@ -33,33 +33,34 @@ function ContainerListPage() {
         setIsLoading(true); // 데이터 불러오기 시작
       }
       try {
-        let response = await auth.profile();
-        console.log(response.data);
+        const response = await axios.get(`/api/user/profile`, {
+          headers: { Authorization: token },
+        });
         if (response.status == 200) {
           setUserNickname(response.data.nickname);
           setUserProfileImgUrl(response.data.profileImgUrl);
         }
       } catch (error) {
-        console.log(error);
-        if (error.response.data.code === 100) {
+        if (error.response.data.code === "0100") {
           // 인증에 실패하였습니다.
           console.error(error.response.data.description);
-        } else if (error.response.data.code === 101) {
+        } else if (error.response.data.code === "0101") {
           // 잘못된 접근입니다.
           console.error(error.response.data.description);
-        } else if (error.response.data.code === 102) {
+        } else if (error.response.data.code === "0102") {
           // 잘못된 Access Token 입니다.
           console.error(error.response.data.description);
-        } else if (error.response.data.code === 103) {
+        } else if (error.response.data.code === "0103") {
           // 만료된 Access Token 입니다.(해당 에러 발생시 Refresh 요청)
+          console.log("문제부분");
           console.error(error.response.data.description);
-        } else if (error.response.data.code === 104) {
+        } else if (error.response.data.code === "0104") {
           // 지원하지 않는 Access Token 입니다.
           console.error(error.response.data.description);
-        } else if (error.response.data.code === 105) {
+        } else if (error.response.data.code === "0105") {
           // Claim이 빈 Access Token 입니다.
           console.error(error.response.data.description);
-        } else if (error.response.data.code === 1203) {
+        } else if (error.response.data.code === "1203") {
           // 존재하지 않는 사용자입니다.
           console.error(error.response.data.description);
         }

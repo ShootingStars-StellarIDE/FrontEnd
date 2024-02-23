@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import * as auth from "../../apis/auth";
 import Loading from "../Loading";
+import axios from "axios";
 
 function Sidebar({ nickname, profileimgurl }) {
   const [isLoading, setIsLoading] = useState(false);
   let isFirstLoading = useRef(true);
-
+  const token = localStorage.getItem("Authorization");
   const navigate = useNavigate();
 
   const goToProfile = () => {
@@ -18,7 +19,7 @@ function Sidebar({ nickname, profileimgurl }) {
   };
 
   const DmUserClick = () => {
-    alert("dm창 띄우기");
+    alert("현재 DM 기능 개발중입니다! :)");
   };
 
   const dmusers = ["IU", "Jungkook", "Eunha", "Eunji"];
@@ -29,7 +30,9 @@ function Sidebar({ nickname, profileimgurl }) {
       setIsLoading(true); // 데이터 불러오기 시작
     }
     try {
-      const res = await auth.logout();
+      const res = await axios.delete(`/api/auth/logout`, {
+        headers: { Authorization: token },
+      });
       console.log(res);
       if (res.status === 200) {
         localStorage.removeItem("Authorization");
@@ -90,50 +93,54 @@ function Sidebar({ nickname, profileimgurl }) {
   };
   return (
     <div className="sidebar">
-      {/* 프로필 카드 */}
-      <div className="profilecard">
-        <div className="picdisplay">
-          <div className="pic" onClick={goToProfile}>
-            <img
-              src={
-                profileimgurl === null
-                  ? "https://img.sbs.co.kr/newsnet/etv/upload/2022/09/19/30000790950.jpg"
-                  : profileimgurl
-              }
-              alt="UserIcon"
-            />
-          </div>
-          <div className="welcomement">
-            <p className="userNickname">{nickname} 님</p>
-            <p>환영합니다!</p>
+      <div className="sidebar-align">
+        {/* 프로필 카드 */}
+        <div className="profilecard">
+          <div className="picdisplay">
+            <div className="pic" onClick={goToProfile}>
+              {profileimgurl && (
+                <img
+                  src={
+                    profileimgurl === null
+                      ? "https://img.sbs.co.kr/newsnet/etv/upload/2022/09/19/30000790950.jpg"
+                      : profileimgurl + "?cache=" + Math.random()
+                  }
+                  alt="UserIcon"
+                />
+              )}
+            </div>
+            <div className="welcomement">
+              <p className="userNickname">{nickname} 님</p>
+              <p>환영합니다!</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* 컨테이너 스페이스 */}
-      <div className="conspace">
-        <details open>
-          <summary>Containers</summary>
-          <div onClick={goToContainerList}>모든 컨테이너</div>
-          <div>내 컨테이너</div>
-          <div>공유 컨테이너</div>
-        </details>
-      </div>
+        {/* 컨테이너 스페이스 */}
+        <div className="conspace">
+          <details open>
+            <summary>Containers</summary>
+            <div onClick={goToContainerList}>컨테이너 바로가기</div>
+            {/* <div>내 컨테이너</div>
+          <div>공유 컨테이너</div> */}
+          </details>
+        </div>
 
-      {/* 다이렉트 메시지 */}
-      <div className="dmlist">
-        <details open>
-          <summary>DM</summary>
-          {dmusers.map((dmuser, dmlistkey) => (
-            <div key={dmlistkey} onClick={DmUserClick}>
-              <img
-                src="https://exp.goorm.io/_next/image?url=https%3A%2F%2Fexp-upload.goorm.io%2F2023-11-13%2FN%2FN20D3vbX1qrGSyOcnU.webp&w=96&q=75"
-                alt="DmIcon"
-              />
-              <p>{dmuser}</p>
-            </div>
-          ))}
-        </details>
+        {/* 다이렉트 메시지 */}
+        <div className="dmlist">
+          <details open>
+            <summary>DM</summary>
+            {dmusers.map((dmuser, dmlistkey) => (
+              <div key={dmlistkey} onClick={DmUserClick}>
+                <img
+                  src="https://exp.goorm.io/_next/image?url=https%3A%2F%2Fexp-upload.goorm.io%2F2023-11-13%2FN%2FN20D3vbX1qrGSyOcnU.webp&w=96&q=75"
+                  alt="DmIcon"
+                />
+                <p>{dmuser}</p>
+              </div>
+            ))}
+          </details>
+        </div>
       </div>
       <div className="logout-div">
         <p className="logout" onClick={logout}>
