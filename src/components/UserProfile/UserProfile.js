@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import * as auth from "../../apis/auth";
 import selectpic from "../../assets/selectpic.svg";
 import ProfileImgModal from "./ProfileImgModal";
-import "../../styles/UserProfile.css"
+import "../../styles/UserProfile.css";
+import UserDeleteModal from "./UserDeleteModal";
+import Loading from "../Loading";
 
-function UserProfile(
-    {email, 
-    nickname, 
-    profileimgurl, 
-    ownedcontainers, 
-    sharedcontainers }
-  ) {
+function UserProfile({
+  email,
+  nickname,
+  profileimgurl,
+  ownedcontainers,
+  sharedcontainers,
+}) {
   const navigate = useNavigate();
-  
+
   //----------------------------------------------------------------state
   const [currentPassword, setcurrentPassword] = useState("");
   const [newPassword, setnewPassword] = useState("");
@@ -24,6 +26,8 @@ function UserProfile(
     "(영어,특수문자,숫자)를 포함한 8~16자를 입력하세요(허용 특수문자:@$!%*#?&)"
   );
   const [renewPasswordError, setRenewPasswordError] = useState(" ");
+  const [isLoading, setIsLoading] = useState(false);
+  let isFirstLoading = useRef(true);
 
   // 프로필 사진
   // const [Image, setImage] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
@@ -36,19 +40,22 @@ function UserProfile(
   //----------------------------------------------------------------비밀번호 관련
   const onChangePassword = (event) => {
     setcurrentPassword(event.target.value);
-  }
+  };
 
   const onKeyUpcurrentPassword = () => {
     if (currentPassword === "") {
-      setcurrentPasswordError("(영어,특수문자,숫자)를 포함한 8~16자를 입력하세요");
+      setcurrentPasswordError(
+        "(영어,특수문자,숫자)를 포함한 8~16자를 입력하세요"
+      );
     } else {
       PasswordAuthCheck2(currentPassword);
     }
-  }
+  };
 
   function PasswordAuthCheck2(inputPassword) {
-    const passwordAuthCheck2 = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
-    if(!passwordAuthCheck2.test(inputPassword)) {
+    const passwordAuthCheck2 =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
+    if (!passwordAuthCheck2.test(inputPassword)) {
       setcurrentPasswordError("비밀번호가 조건에 맞지 않습니다.");
     } else {
       setcurrentPasswordError("비밀번호가 조건에 맞습니다.");
@@ -58,7 +65,7 @@ function UserProfile(
   //----------------------------------------------------------------새 비밀번호 관련
   const onChangeNewPassword = (event) => {
     setnewPassword(event.target.value);
-  }
+  };
 
   const onKeyUpPassword = () => {
     if (newPassword === "") {
@@ -66,13 +73,14 @@ function UserProfile(
     } else {
       PasswordAuthCheck(newPassword);
     }
-  }
+  };
 
   function PasswordAuthCheck(inputPassword) {
-    const passwordAuthCheck = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
-    if(!passwordAuthCheck.test(inputPassword)) {
+    const passwordAuthCheck =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
+    if (!passwordAuthCheck.test(inputPassword)) {
       setnewPasswordError("비밀번호가 조건에 맞지 않습니다.");
-    } else if(inputPassword === currentPassword) {
+    } else if (inputPassword === currentPassword) {
       setnewPasswordError("이미 사용중인 비밀번호입니다.");
     } else {
       setnewPasswordError("사용 가능한 비밀번호입니다.");
@@ -102,102 +110,101 @@ function UserProfile(
     const form = e.target;
     const currentPassword = form.password.value;
     const newPassword = form.newpassword.value;
-    
+
     let isValid = true;
-    
-    if(currentPasswordError !== "비밀번호가 조건에 맞습니다.") {
+
+    if (currentPasswordError !== "비밀번호가 조건에 맞습니다.") {
       setcurrentPasswordError("비밀번호를 확인해 주세요.");
       isValid = false;
     }
 
-    if(newPasswordError !== "사용 가능한 비밀번호입니다.") {
+    if (newPasswordError !== "사용 가능한 비밀번호입니다.") {
       setnewPasswordError("비밀번호를 확인해 주세요.");
       isValid = false;
     }
 
-    if(renewPasswordError !== "비밀번호가 일치합니다.") {
+    if (renewPasswordError !== "비밀번호가 일치합니다.") {
       setRenewPasswordError("비밀번호를 확인해 주세요.");
       isValid = false;
     }
 
-    if(!isValid) {
+    if (!isValid) {
       return;
-    } else { 
-      editInfoApi({password: currentPassword, newpassword: newPassword})
+    } else {
+      editInfoApi({ password: currentPassword, newpassword: newPassword });
     }
-  }
+  };
 
   //----------------------------------------------------------------회원정보 수정 요청
   const editInfoApi = async (form) => {
-  
+    if (isFirstLoading.current) {
+      setIsLoading(true); // 데이터 불러오기 시작
+    }
     let response = await auth.checkPassword(form.password);
     // 비밀번호 확인
     try {
-      if (response.status == 200) { // 비밀번호 확인이 완료됐다면
-        const editInfoRequest = await auth.ChangePassword(form.password, form.newpassword);
+      if (response.status == 200) {
+        // 비밀번호 확인이 완료됐다면
+        const editInfoRequest = await auth.ChangePassword(
+          form.password,
+          form.newpassword
+        );
         // 비밀번호 변경
         try {
-          if (editInfoRequest.status == 200) { // 비밀번호 변경이 완료됐다면
+          if (editInfoRequest.status == 200) {
+            // 비밀번호 변경이 완료됐다면
             alert("회원정보가 변경되었습니다.");
             localStorage.removeItem("Authorization"); // access token 삭제(로그아웃)
             navigate("/");
           }
-        } catch (error) { 
+        } catch (error) {
           if (error.response.data.code === 1004) {
             // 잘못된 형식의 비밀번호입니다.
             console.error(error.response.data.description);
-          }
-          else if (error.response.data.code === 100) {
+          } else if (error.response.data.code === 100) {
             // 인증에 실패하였습니다.
             console.error(error.response.data.description);
-          }
-          else if (error.response.data.code === 101) {
+          } else if (error.response.data.code === 101) {
             // 잘못된 접근입니다.
             console.error(error.response.data.description);
-          }
-          else if (error.response.data.code === 102) {
+          } else if (error.response.data.code === 102) {
             // 잘못된 Access Token 입니다.
             console.error(error.response.data.description);
-          }
-          else if (error.response.data.code === 103) {
+          } else if (error.response.data.code === 103) {
             // 만료된 Access Token 입니다.(해당 에러 발생시 Refresh 요청)
             console.error(error.response.data.description);
-          }
-          else if (error.response.data.code === 104) {
+          } else if (error.response.data.code === 104) {
             // 지원하지 않는 Access Token 입니다.
             console.error(error.response.data.description);
-          }
-          else if (error.response.data.code === 105) {
+          } else if (error.response.data.code === 105) {
             // Claim이 빈 Access Token 입니다.
             console.error(error.response.data.description);
-          }
-          else if (error.response.data.code === 106) {
+          } else if (error.response.data.code === 106) {
             // 잘못된 Refresh Token 입니다.
             console.error(error.response.data.description);
-          }
-          else if (error.response.data.code === 107) {
+          } else if (error.response.data.code === 107) {
             // 만료된 Refresh Token 입니다.
             console.error(error.response.data.description);
-          }
-          else if (error.response.data.code === 108) {
+          } else if (error.response.data.code === 108) {
             // 지원하지 않는 Refresh Token 입니다.
             console.error(error.response.data.description);
-          }
-          else if (error.response.data.code === 109) {
+          } else if (error.response.data.code === 109) {
             // Claim이 빈 RefreshToken 입니다.
             console.error(error.response.data.description);
-          }
-          else if (error.response.data.code === 1201) {
+          } else if (error.response.data.code === 1201) {
             // 존재하지 않는 사용자입니다.
             console.error(error.response.data.description);
-          }
-          else if (error.response.data.code === 1104) {
+          } else if (error.response.data.code === 1104) {
             // 잘못된 패스워드입니다.
             console.error(error.response.data.description);
-          }
-          else if (error.response.data.code === 1304) {
+          } else if (error.response.data.code === 1304) {
             // 현재 사용중인 패스워드입니다. 다른 패스워드로 입력바랍니다.
             console.error(error.response.data.description);
+          }
+        } finally {
+          if (isFirstLoading) {
+            setIsLoading(false); // 데이터 불러오기 완료
+            isFirstLoading.current = false;
           }
         }
       }
@@ -205,42 +212,58 @@ function UserProfile(
       if (error.response.data.code === 1004) {
         // 잘못된 형식의 비밀번호입니다.
         console.error(error.response.data.description);
-      }
-      else if (error.response.data.code === 100) {
+      } else if (error.response.data.code === 100) {
         // 인증에 실패하였습니다.
         console.error(error.response.data.description);
-      }
-      else if (error.response.data.code === 101) {
+      } else if (error.response.data.code === 101) {
         // 잘못된 접근입니다.
         console.error(error.response.data.description);
-      }
-      else if (error.response.data.code === 102) {
+      } else if (error.response.data.code === 102) {
         // 잘못된 Access Token 입니다.
         console.error(error.response.data.description);
-      }
-      else if (error.response.data.code === 103) {
+      } else if (error.response.data.code === 103) {
         // 만료된 Access Token 입니다.(해당 에러 발생시 Refresh 요청)
         console.error(error.response.data.description);
-      }
-      else if (error.response.data.code === 104) {
+      } else if (error.response.data.code === 104) {
         // 지원하지 않는 Access Token 입니다.
         console.error(error.response.data.description);
-      }
-      else if (error.response.data.code === 105) {
+      } else if (error.response.data.code === 105) {
         // Claim이 빈 Access Token 입니다.
         console.error(error.response.data.description);
-      }
-      else if (error.response.data.code === 1201) {
+      } else if (error.response.data.code === 1201) {
         // 존재하지 않는 사용자입니다.
         console.error(error.response.data.description);
-      }
-      else if (error.response.data.code === 1104) {
+      } else if (error.response.data.code === 1104) {
         // 잘못된 패스워드입니다.
         console.error(error.response.data.description);
+      }
+    } finally {
+      if (isFirstLoading) {
+        setIsLoading(false); // 데이터 불러오기 완료
+        isFirstLoading.current = false;
       }
     }
 
     return response;
+  };
+
+  const UserDelete = () => {
+    openModal(); // 모달 열기
+  };
+
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  // 상태가 변경될 때마다 폼의 유효성을 재평가
+  useEffect(() => {
+    const isValid =
+      currentPasswordError === "비밀번호가 조건에 맞습니다." &&
+      newPasswordError === "사용 가능한 비밀번호입니다." &&
+      renewPasswordError === "비밀번호가 일치합니다.";
+    setIsFormValid(isValid);
+  }, [currentPasswordError, newPasswordError, renewPasswordError]);
+
+  if (isLoading) {
+    return <Loading />;
   }
 
   return (
@@ -260,19 +283,27 @@ function UserProfile(
 
       <form
         className="Signup-Form"
-        onSubmit = {(e) => editInfo(e)}
+        onSubmit={(e) => editInfo(e)}
         // 엔터 키를 눌렀을 때 폼의 자동 제출 방지
-        onKeyDown = {(e) => {
+        onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault();
           }
-        }
-      }
-      > 
+        }}
+      >
         <div className="profile-card">
           <div className="profile-image-placeholder">
             {/* 프로필 사진 */}
-              {profileimgurl && <img src={profileimgurl + "?cache=" + Math.random()} alt="userimg" className="userimg"/>}
+              {profileimgurl && 
+              <img
+                src={
+                  profileimgurl === null
+                    ? "https://img.sbs.co.kr/newsnet/etv/upload/2022/09/19/30000790950.jpg"
+                    : profileimgurl + "?cache=" + Math.random()
+                }
+                alt="userimg"
+                className="userimg"
+              />}
             {/* 사진 변경 뱃지 */}
             <div className="notification-badge">
               <img 
@@ -306,7 +337,8 @@ function UserProfile(
             <div
               className={`error-message ${
                 currentPasswordError === "비밀번호가 조건에 맞습니다."
-                ? "is-valid" : "is-error"
+                  ? "is-valid"
+                  : "is-error"
               }`}
             >
               {currentPasswordError}
@@ -327,7 +359,8 @@ function UserProfile(
             <div
               className={`error-message ${
                 newPasswordError === "사용 가능한 비밀번호입니다."
-                ? "is-valid" : "is-error"
+                  ? "is-valid"
+                  : "is-error"
               }`}
             >
               {newPasswordError}
@@ -344,9 +377,11 @@ function UserProfile(
             <div className="input-null"></div>
 
             <div
-              className={`error-message ${renewPasswordError === "비밀번호가 일치합니다."
-                ? "is-valid" : "is-error"
-                }`}
+              className={`error-message ${
+                renewPasswordError === "비밀번호가 일치합니다."
+                  ? "is-valid"
+                  : "is-error"
+              }`}
             >
               {renewPasswordError}
             </div>
@@ -355,11 +390,22 @@ function UserProfile(
             <p className="info">{ownedcontainers}개</p>
             <p className="title">공유 컨테이너 개수</p>
             <p className="info">{sharedcontainers}개</p>
-            <button className="edit-button" type="submit">회원정보 수정</button>
-            <p className="cancel-membership">회원 탈퇴</p>
+            <button
+              className={`edit-button ${isFormValid ? "" : "disabled"}`}
+              type="submit"
+            >
+              회원정보 수정
+            </button>
+            <div className="cancel-membership-container">
+              <div>회원 탈퇴를 하시겠습니까?</div>
+              <div className="cancel-membership" onClick={UserDelete}>
+                회원 탈퇴
+              </div>
+            </div>
           </div>
         </div>
       </form>
+      <UserDeleteModal isOpen={isOpen} close={closeModal} />
     </div>
   );
 }

@@ -2,12 +2,20 @@ import "../styles/SignUp.css";
 import SignupForm from "../components/Signup/SignupForm";
 import * as auth from "../apis/auth";
 import { useNavigate } from "react-router-dom";
+import { useRef, useState } from "react";
+import Loading from "../components/Loading";
 
 function SignUpPage() {
   const navigate = useNavigate();
 
+  const [isLoading, setIsLoading] = useState(false);
+  let isFirstLoading = useRef(true);
+
   //회원가입 요청
   const join = async (form) => {
+    if (isFirstLoading.current) {
+      setIsLoading(true); // 데이터 불러오기 시작
+    }
     let response;
 
     response = await auth.signup(form.email, form.nickname, form.password);
@@ -16,6 +24,10 @@ function SignUpPage() {
 
     try {
       if (status === 200) {
+        if (isFirstLoading) {
+          setIsLoading(false); // 데이터 불러오기 완료
+          isFirstLoading.current = false;
+        }
         navigate("/");
       }
     } catch (error) {
@@ -30,6 +42,11 @@ function SignUpPage() {
       //잘못된 키 혹은 잘못(만료) 된 인증 코드입니다.
       else if (error.response.data.code === 1101) {
         console.error(error.response.data.description);
+      }
+    } finally {
+      if (isFirstLoading) {
+        setIsLoading(false); // 데이터 불러오기 완료
+        isFirstLoading.current = false;
       }
     }
   };
@@ -63,9 +80,12 @@ function SignUpPage() {
   const nickNameCheck = async (nickname) => {
     let response;
     response = await auth.nickNameCheck(nickname);
+
     return response;
   };
-
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <SignupForm
       join={join}

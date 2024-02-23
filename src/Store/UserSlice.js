@@ -63,7 +63,7 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user.accessToken = action.payload; // accessToken을 상태에 저장합니다.
+        state.user = action.payload; // accessToken을 상태에 저장합니다.
         state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
