@@ -273,15 +273,16 @@ function ContainerEditPage() {
     const containerId = params.containerId;
     const activeEditor = editors[activeTab];
     const realPath = activeEditor.path.replace(/\-/g, "/");
-    let path = realPath.split("/").pop();
+    let path;
+    let parts = realPath.split("/");
 
     if (fileType === "JAVA") {
-      // 배열
-      let parts = realPath.split("/");
       // 마지막 부분에서 java 제거
       parts[parts.length - 1] = parts[parts.length - 1].replace(".java", "");
       // 그 전 디렉토리 + 파일이름
       path = parts.slice(2, parts.length).join("/");
+    } else {
+      path = parts.slice(1, parts.length).join("/");
     }
 
     const res = await axios.post(
