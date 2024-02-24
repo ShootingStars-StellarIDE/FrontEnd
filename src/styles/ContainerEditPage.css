@@ -35,6 +35,10 @@
   overflow: auto;
 }
 
+.tree-main::-webkit-scrollbar {
+  display: none;
+}
+
 .editor-container {
   width: 80%;
 }

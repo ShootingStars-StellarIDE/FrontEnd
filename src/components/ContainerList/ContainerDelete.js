@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 
 import "../../styles/ContainerModal.css";
 
-import * as auth from "../../apis/auth";
 import { useNavigate } from "react-router-dom";
 import Loading from "../Loading";
 import axios from "axios";
@@ -12,12 +11,12 @@ function ContainerDelete({ removeOwner, selectedContainerId, isOpen, close }) {
   let isFirstLoading = useRef(true);
   const [password, setPassword] = useState("");
   const [isVerified, setIsVerified] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(" ");
+  const [errorMsg, setErrorMsg] = useState("비밀번호를 인증해주세요.");
   const navigate = useNavigate();
   const token = localStorage.getItem("Authorization");
 
   if (!isOpen) return null;
-  console.log(selectedContainerId.containerId);
+
   const containerId = selectedContainerId.containerId;
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
@@ -33,14 +32,12 @@ function ContainerDelete({ removeOwner, selectedContainerId, isOpen, close }) {
         { password },
         { headers: { Authorization: token } }
       );
-      console.log(checkPassword);
+
       if (checkPassword.status === 200) {
-        console.log("인증 완료");
         setErrorMsg("비밀번호가 인증되었습니다.");
         setIsVerified(true);
       }
     } catch (error) {
-      console.log(error);
       const errorRes = error.response.data;
       if (errorRes.code === "1004") {
         // 잘못된 형식의 비밀번호입니다.
@@ -128,9 +125,12 @@ function ContainerDelete({ removeOwner, selectedContainerId, isOpen, close }) {
       <div className="modal-backdrop">
         <div className="modal">
           <h3 className="title">컨테이너 삭제</h3>
-          <div className="error">{errorMsg}</div>
+
+          <div className={`error ${isVerified ? "is-valid" : ""}`}>
+            {errorMsg}
+          </div>
           <h3 className="password-recheck">비밀번호 확인</h3>
-          <div className="password-check">
+          <div className="obj">
             <input
               id="password-input"
               type="password"
@@ -138,21 +138,13 @@ function ContainerDelete({ removeOwner, selectedContainerId, isOpen, close }) {
               placeholder="비밀번호를 입력하세요"
               onChange={handlePasswordChange}
             />
-            <button className="buttons-check" onClick={onClickPassWordCheck}>
-              확인하기
-            </button>
+            <button onClick={onClickPassWordCheck}>확인하기</button>
           </div>
-          <div className="modal-button-container">
-            <button
-              className="buttons-delete"
-              onClick={onClickDeleteContainer}
-              disabled={!isVerified}
-            >
+          <div className="buttons">
+            <button onClick={onClickDeleteContainer} disabled={!isVerified}>
               삭제하기
             </button>
-            <button className="buttons-delete" onClick={close}>
-              닫기
-            </button>
+            <button onClick={close}>닫기</button>
           </div>
         </div>
       </div>

@@ -231,7 +231,6 @@ function UserProfile({
         }
       }
     } catch (error) {
-      console.log("흠");
       if (error.response.data.code === "1004") {
         // 잘못된 형식의 비밀번호입니다.
         setcurrentPasswordError(error.response.data.description);

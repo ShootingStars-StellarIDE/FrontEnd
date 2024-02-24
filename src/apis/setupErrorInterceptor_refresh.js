@@ -4,17 +4,16 @@ import * as auth from "./auth";
 export const setupErrorInterceptor_refresh = () => {
   const token = localStorage.getItem("Authorization");
   const errorCodes = ["0103"];
-  console.log("음");
+
   axios.interceptors.response.use(
     (response) => response,
     async (error) => {
-      console.log(error);
       if (error.response && errorCodes.includes(error.response.data.code)) {
         try {
           const res = await axios.post(`/api/auth/refresh`, null, {
             headers: { Authorization: token },
           });
-          console.log("dh");
+
           if (res.status === 200) {
             const authHeader =
               res.headers["Authorization"] || res.headers["authorization"];
@@ -26,7 +25,6 @@ export const setupErrorInterceptor_refresh = () => {
             }
           }
         } catch (refreshError) {
-          console.log(refreshError);
           {
             if (refreshError.response.data.code == "0101") {
               // 잘못된 접근입니다.

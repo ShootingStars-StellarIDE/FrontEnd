@@ -20,19 +20,24 @@
 
 .modal .buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
+}
+
+.modal .obj {
+  display: flex;
+  justify-content: center;
 }
 
 .modal button {
-  /* 버튼 스타일 */
   background-color: #4ed9a5;
-  color: black;
+  color: white;
   font-weight: bold;
   padding: 10px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   outline: none;
+  /* margin-left: 50px; */
 }
 
 .modal input {
@@ -77,4 +82,8 @@
   display: flex;
   justify-content: space-around;
   margin-bottom: 50px;
+}
+
+.error.is-valid {
+  color: #4ed9a5;
 }

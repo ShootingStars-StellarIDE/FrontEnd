@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import "../../styles/ContainerModal.css";
-import javaIco from "../../assets/JAVA.svg";
-import pythonIco from "../../assets/python.svg";
-import * as auth from "../../apis/auth";
+
 import Loading from "../Loading";
 import axios from "axios";
 
@@ -11,12 +9,11 @@ function ContainerShare({ isOpen, close, selectedContainerId }) {
   const [isLoading, setIsLoading] = useState(false);
   let isFirstLoading = useRef(true);
   // 컨테이너 정보
-  const [Nickname, setNickname] = useState("");
+  const [userNickname, setNickname] = useState("");
   const token = localStorage.getItem("Authorization");
 
   if (!isOpen) return null;
   const containerId = selectedContainerId.containerId;
-  console.log(containerId);
   //----------------------------------------------------------------컨테이너 내용
   const onChangeNickname = (event) => {
     setNickname(event.target.value);
@@ -30,12 +27,11 @@ function ContainerShare({ isOpen, close, selectedContainerId }) {
     try {
       const response = await axios.post(
         `/api/container/share`,
-        { containerId, Nickname },
+        { containerId, userNickname },
         {
           headers: { Authorization: token },
         }
       );
-      console.log(response);
       if (response.status === 200) {
         alert("성공적으로 공유하셨습니다 :)");
         close();
@@ -59,7 +55,7 @@ function ContainerShare({ isOpen, close, selectedContainerId }) {
   };
 
   const share = (e) => {
-    if (Nickname === "") {
+    if (userNickname === "") {
       alert("닉네임을 입력해 주세요.");
       return;
     } else {

@@ -21,10 +21,12 @@
 
 .usercon-display {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
+  width: 100%;
   margin-bottom: 20px;
   font-size: 1.2rem;
   color: rgb(144, 144, 144);
+  align-items: center;
 }
 
 .userNickname {
@@ -78,7 +80,9 @@
   justify-content: start;
 }
 
-.own-containers, .shared-containers, .all-containers {
+.own-containers,
+.shared-containers,
+.all-containers {
   padding: 5px 10px;
   min-width: 102px;
   background-color: white;
@@ -92,15 +96,13 @@
   cursor: pointer;
 }
 
-.own-shared-containers div.selected{
+.own-shared-containers div.selected {
   border: 3px solid #4ed9a5;
 }
 
 .all-containers {
   margin: 0px 10px;
 }
-
-
 
 .own-containers {
   margin-right: 10px;
@@ -173,10 +175,14 @@
   margin: 5px 0px;
   font-size: 16px;
   font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .conname-line {
   display: flex;
+
   justify-content: space-between;
   margin-bottom: 5px;
 }
@@ -207,13 +213,22 @@
 
 .editUserUuid {
   font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .condesc {
   flex-grow: 1;
   margin: 5px 0px;
-  height: auto;
+  height: 130px;
   color: #5c5c5c;
+  overflow: auto;
+  word-wrap: break-word;
+}
+
+.condesc::-webkit-scrollbar {
+  display: none;
 }
 
 .idestart {
@@ -235,4 +250,16 @@
 .container-cards > div:first-child:hover {
   background-color: #4ed9a5;
   color: #d8d8d8;
+}
+.createdTime,
+.lastModifiedTime {
+  white-space: nowrap;
+}
+
+.logo-containerlist {
+  height: 20px;
+  margin-right: 10px;
+}
+.header-container {
+  display: flex;
 }

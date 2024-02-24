@@ -88,7 +88,6 @@ export const containerCreate = (
   containerName,
   containerDescription
 ) => {
-  console.log(containerType);
   const token = localStorage.getItem("Authorization");
   return api.post(
     `/api/container/create`,
