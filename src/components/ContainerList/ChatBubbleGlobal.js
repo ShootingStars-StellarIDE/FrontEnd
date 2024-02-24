@@ -16,7 +16,6 @@ function ChatBubbleGlobal({ nickname }) {
   const baseurl = process.env.REACT_APP_WS_PROXY;
 
   useEffect(() => {
-    console.log(nickname);
     setUserNickname(nickname);
   }, [nickname]);
 
@@ -37,12 +36,10 @@ function ChatBubbleGlobal({ nickname }) {
       }
 
       webSocket.current.onopen = function (e) {
-        console.log("open server!");
         enterRoom(webSocket.current);
       };
 
       webSocket.current.onmessage = function (e) {
-        console.log(e.data);
         const currentMessage = JSON.parse(e.data);
         const currentTime = new Date();
         const messageWithTime = {

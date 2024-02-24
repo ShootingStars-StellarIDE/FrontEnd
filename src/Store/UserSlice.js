@@ -21,19 +21,22 @@ export const loginUser = createAsyncThunk(
         }
       }
     } catch (error) {
-      console.log(error);
       if (error.response.data) {
         switch (error.response.data.code) {
           case 1001:
+            alert(error.response.data.description);
             console.error(error.response.data.description);
             break;
           case 1004:
+            alert(error.response.data.description);
             console.error(error.response.data.description);
             break;
           case 1103:
+            alert(error.response.data.description);
             console.error(error.response.data.description);
             break;
           default:
+            alert(error.response.data.description);
             console.error(error.response.data.description);
         }
       }

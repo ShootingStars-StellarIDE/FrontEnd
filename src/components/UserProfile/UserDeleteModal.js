@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-import * as auth from "../../apis/auth";
 import { useNavigate } from "react-router-dom";
 import "../../styles/DeleteUserModal.css";
 import Loading from "../Loading";
@@ -8,7 +7,7 @@ import axios from "axios";
 const UserDeleteModal = ({ isOpen, close }) => {
   const [password, setPassword] = useState("");
   const [isVerified, setIsVerified] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(" ");
+  const [errorMsg, setErrorMsg] = useState("비밀번호 인증을 해주세요.");
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   let isFirstLoading = useRef(true);
@@ -30,14 +29,11 @@ const UserDeleteModal = ({ isOpen, close }) => {
         { password },
         { headers: { Authorization: token } }
       );
-      console.log(checkPassword);
       if (checkPassword.status === 200) {
-        console.log("인증 완료");
         setErrorMsg("비밀번호가 인증되었습니다.");
         setIsVerified(true);
       }
     } catch (error) {
-      console.log(error);
       const errorRes = error.response.data;
       if (errorRes.code === "1004") {
         // 잘못된 형식의 비밀번호입니다.
@@ -93,21 +89,17 @@ const UserDeleteModal = ({ isOpen, close }) => {
   };
 
   const onClickDeletePassWord = async () => {
-    console.log("onClickDeletePassWord called");
     setIsLoading(true); // 로딩 시작
-    console.log("Loading started");
     try {
       const deleteUser = await axios.delete(`/api/auth/delete/user`, {
         headers: { Authorization: token },
       });
-      console.log(deleteUser);
       if (deleteUser.status === 200) {
         localStorage.removeItem("Authorization");
         alert("성공적으로 회원탈퇴를 했습니다. 다음에 또 봐요 우리🥲");
         navigate("/");
       }
     } catch (error) {
-      console.log(error);
       const errorRes = error.response.data;
       if (errorRes.code === "0100") {
         // 인증에 실패하였습니다.
@@ -166,7 +158,6 @@ const UserDeleteModal = ({ isOpen, close }) => {
       }
     } finally {
       setIsLoading(false);
-      console.log("Loading finished");
       isFirstLoading.current = false;
     }
   };
@@ -179,7 +170,9 @@ const UserDeleteModal = ({ isOpen, close }) => {
         <div className="modal">
           <h3 className="title">회원 탈퇴</h3>
 
-          <div className="error">{errorMsg}</div>
+          <div className={`error ${isVerified ? "is-valid" : ""}`}>
+            {errorMsg}
+          </div>
           <h3 className="password-recheck">비밀번호 확인</h3>
           <div className="password-check">
             <input

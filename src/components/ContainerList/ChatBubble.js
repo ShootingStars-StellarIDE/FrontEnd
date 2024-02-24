@@ -39,12 +39,10 @@ function ChatBubble(containerId) {
       }
 
       webSocket.current.onopen = function (e) {
-        console.log("open server!");
         enterRoom(webSocket.current);
       };
 
       webSocket.current.onmessage = function (e) {
-        console.log(e.data);
         const currentMessage = JSON.parse(e.data);
         const currentTime = new Date();
         const messageWithTime = {
@@ -111,7 +109,7 @@ function ChatBubble(containerId) {
         );
 
         if (res.status == 200) {
-          setMessages((prev) => [...res.data.content, ...prev]);
+          setMessages((prev) => [...res.data, ...prev]);
         }
       } catch (error) {
         console.error(error);

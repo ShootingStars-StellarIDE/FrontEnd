@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ContainerModal from "./ContainerModal";
-import edteIcon from "../../assets/edit.svg";
+import editIcon from "../../assets/edit.svg";
 import deleteIcon from "../../assets/delete.svg";
 import shareIcon from "../../assets/share.svg";
-import * as auth from "../../apis/auth";
 import ContainerEdit from "./ContainerEdit";
 import ContainerShare from "./ContainerShare";
 import ContainerDelete from "./ContainerDelete";
 import Loading from "../Loading";
 import axios from "axios";
+import logo from "../../assets/logo_stellar.png";
 
 function ContainerList({ nickname }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -143,9 +143,9 @@ function ContainerList({ nickname }) {
   };
 
   // 컨테이너 제목, 내용이 길면 '...'남기고 잘라내기
-  const cutString = (str, num) => {
-    return str.length > num ? str.slice(0, num) + "..." : str;
-  };
+  // const cutString = (str, num) => {
+  //   return str.length > num ? str.slice(0, num) + "..." : str;
+  // };
 
   // 소유, 공유 컨테이너 렌더링 함수
   const ContainerVisible = (select) => {
@@ -172,7 +172,6 @@ function ContainerList({ nickname }) {
       (card) => card.containerId !== containerId
     );
     setOwnCards(nowOwnCards);
-    console.log("리무브 오너 실행");
   };
 
   const editOwner = (containerId, newDescription) => {
@@ -191,24 +190,37 @@ function ContainerList({ nickname }) {
     }
   };
 
+  const editShare = (containerId, newDescription) => {
+    const targetIndex = sharedcards.findIndex(
+      (card) => card.containerId === containerId
+    );
+
+    if (targetIndex !== -1) {
+      const updatedCards = [...sharedcards];
+      updatedCards[targetIndex] = {
+        ...updatedCards[targetIndex],
+        description: newDescription,
+      };
+
+      setSharedCards(updatedCards);
+    }
+  };
+
   //----------------------------------------------------------------태균 작업
   const [selectedContainerId, setSelectedContainerId] = useState(null);
 
   const handleOpenDeleteModal = (owncards) => {
     setSelectedContainerId(owncards);
-    console.log(selectedContainerId);
     openDeleteModal(); // 모달을 여는 함수
   };
 
   const handleOpenEditModal = (owncards) => {
     setSelectedContainerId(owncards);
-    console.log(selectedContainerId);
     openEditModal(); // 모달을 여는 함수
   };
 
   const handleOpenShareModal = (owncards) => {
     setSelectedContainerId(owncards);
-    console.log(selectedContainerId);
     openShareModal(); // 모달을 여는 함수
   };
 
@@ -222,8 +234,11 @@ function ContainerList({ nickname }) {
       <div className="contents-header">
         {/* 회원이름/컨테이너 분류 표시 */}
         <div className="usercon-display">
-          <p className="userNickname">{nickname}</p>
-          <p>님 / 컨테이너 리스트</p>
+          <div className="header-container">
+            <p className="userNickname">{nickname}</p>
+            <p>님 / 컨테이너 리스트</p>
+          </div>
+          <img className="logo-containerlist" src={logo} alt="logo" />
         </div>
 
         {/* 컨테이너 분류 표시 */}
@@ -297,12 +312,10 @@ function ContainerList({ nickname }) {
           {filteredOwnCards.map((item, owncards) => (
             <div className="concards" key={owncards}>
               <div className="conname-line">
-                <div className="conname">
-                  {item && item.name && cutString(item.name, 20)}
-                </div>
+                <div className="conname">{item.name}</div>
                 <div className="esd-icons">
                   <img
-                    src={edteIcon}
+                    src={editIcon}
                     alt="edit"
                     onClick={() => handleOpenEditModal(item)}
                   />
@@ -327,7 +340,7 @@ function ContainerList({ nickname }) {
               </div>
               <div className="nicknameline">
                 <div className="editUserUuid">
-                  {item && item.editUserNickname}
+                  최근 수정자: {item && item.editUserNickname}
                 </div>
                 <div className="lastModifiedTime">
                   수정:{" "}
@@ -336,9 +349,7 @@ function ContainerList({ nickname }) {
                     item.lastModifiedTime.split("T")[0]}
                 </div>
               </div>
-              <div className="condesc">
-                {item && item.description && cutString(item.description, 80)}
-              </div>
+              <div className="condesc">{item.description}</div>
               <div
                 className="idestart"
                 onClick={() => navigate(`/container/${item.containerId}`)}
@@ -358,11 +369,13 @@ function ContainerList({ nickname }) {
           {filteredSharedCards.map((item, sharedcards) => (
             <div className="concards" key={sharedcards}>
               <div className="conname-line">
-                <div className="conname">
-                  {item && item.name && cutString(item.name, 20)}
-                </div>
+                <div className="conname">{item.name}</div>
                 <div className="esd-icons">
-                  <img src={edteIcon} alt="edit" />
+                  <img
+                    src={editIcon}
+                    alt="edit"
+                    onClick={() => handleOpenEditModal(item)}
+                  />
                 </div>
               </div>
               <div className="typeline">
@@ -374,7 +387,7 @@ function ContainerList({ nickname }) {
               </div>
               <div className="nicknameline">
                 <div className="editUserUuid">
-                  {item && item.editUserNickname}
+                  최근 수정자: {item && item.editUserNickname}
                 </div>
                 <div className="lastModifiedTime">
                   수정:{" "}
@@ -383,9 +396,7 @@ function ContainerList({ nickname }) {
                     item.lastModifiedTime.split("T")[0]}
                 </div>
               </div>
-              <div className="condesc">
-                {item && item.description && cutString(item.description, 80)}
-              </div>
+              <div className="condesc">{item.description}</div>
               <div
                 className="idestart"
                 onClick={() => navigate(`/container/${item.containerId}`)}
@@ -399,6 +410,7 @@ function ContainerList({ nickname }) {
 
       <ContainerModal addOwner={addOwner} isOpen={isOpen} close={closeModal} />
       <ContainerEdit
+        editShare={editShare}
         editOwner={editOwner}
         selectedContainerId={selectedContainerId}
         isOpen={isEditOpen}

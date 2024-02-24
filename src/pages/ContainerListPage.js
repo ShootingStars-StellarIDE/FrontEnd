@@ -3,14 +3,12 @@ import "../styles/ContainerListPage.css";
 import "../styles/Sidebar.css";
 import "../styles/ContainerList.css";
 import "../styles/UserProfile.css";
-import * as auth from "../apis/auth";
 import "../styles/ContainerModal.css";
 import axios from "axios";
 
 import Sidebar from "../components/ContainerList/Sidebar";
 import ContainerList from "../components/ContainerList/ContainerList";
 import ChatBubbleGlobal from "../components/ContainerList/ChatBubbleGlobal";
-import Loading from "../components/Loading";
 
 function ContainerListPage() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -36,7 +34,7 @@ function ContainerListPage() {
         const response = await axios.get(`/api/user/profile`, {
           headers: { Authorization: token },
         });
-        if (response.status == 200) {
+        if (response.status === 200) {
           setUserNickname(response.data.nickname);
           setUserProfileImgUrl(response.data.profileImgUrl);
         }
@@ -52,7 +50,6 @@ function ContainerListPage() {
           console.error(error.response.data.description);
         } else if (error.response.data.code === "0103") {
           // 만료된 Access Token 입니다.(해당 에러 발생시 Refresh 요청)
-          console.log("문제부분");
           console.error(error.response.data.description);
         } else if (error.response.data.code === "0104") {
           // 지원하지 않는 Access Token 입니다.
@@ -73,11 +70,20 @@ function ContainerListPage() {
     };
     userInfoApi();
   }, []);
-  if (isLoading) {
-    return <Loading />;
-  }
+
+  const LoadingModal = ({ isLoading }) => {
+    if (!isLoading) return null;
+
+    return (
+      <div className="loading-modal">
+        <div className="loading-spinner"></div>
+        <p className={"loading-p"}>데이터를 불러오는 중입니다...</p>
+      </div>
+    );
+  };
   return (
     <div className="main-container">
+      <LoadingModal isLoading={isLoading} />
       <Sidebar
         nickname={userNickname}
         profileimgurl={userProfileImgUrl}

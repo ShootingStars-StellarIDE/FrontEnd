@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../Store/UserSlice";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import Loading from "../Loading";
+import logo from "../../assets/logo_stellar.png";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -76,13 +76,21 @@ const LoginForm = () => {
       });
     }
   };
-  if (loading) {
-    return <Loading />;
-  }
+  const LoadingModal = ({ isLoading }) => {
+    if (!isLoading) return null;
+
+    return (
+      <div className="loading-modal">
+        <div className="loading-spinner"></div>
+        <p className={"loading-p"}>데이터를 불러오는 중입니다...</p>
+      </div>
+    );
+  };
   return (
     <div className="Login-container">
+      <LoadingModal isLoading={loading} />
       <form className="Login-Form" onSubmit={(e) => onLogin(e)}>
-        <h1>Logo</h1>
+        <img className="logo" src={logo} alt="logo"></img>
         <h1>로그인</h1>
         <div className="Login-email-container">
           <label htmlFor="Login-email">이메일</label>

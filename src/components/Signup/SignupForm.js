@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import Loading from "../Loading";
+import logo from "../../assets/logo_stellar.png";
 
 const SignupForm = ({
   join,
@@ -52,13 +52,11 @@ const SignupForm = ({
     try {
       // 이메일 중복 검사 실행
       const duplicateResult = await emailCheck(email);
-      console.log(email);
       // 정상적인 응답 처리
       if (duplicateResult.status == 200) {
         // 중복된 이메일이 없는 경우, 이메일 인증 요청 실행
         try {
           const sendEmailRequest = await sendEmailAuthRequest(email);
-          console.log(email);
           if (sendEmailRequest.status == 200) {
             setEmailError("올바르게 전송되었습니다. 메일을 확인해주세요.");
             setIsEmailAuthed(true); // 인증 성공 상태 업데이트
@@ -107,7 +105,6 @@ const SignupForm = ({
         }
       }
     } catch (error) {
-      // console.log(error.response.data.description);
       // 오류 처리
       if (error.response.data.code == 1301) {
         // 이미 사용중인 이메일입니다.
@@ -313,17 +310,25 @@ const SignupForm = ({
     if (!isValid) {
       return;
     } else {
-      console.log(email, password, nickname);
       join({ email, nickname, password });
     }
   };
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  const LoadingModal = ({ isLoading }) => {
+    if (!isLoading) return null;
+
+    return (
+      <div className="loading-modal">
+        <div className="loading-spinner"></div>
+        <p className={"loading-p"}>데이터를 불러오는 중입니다...</p>
+      </div>
+    );
+  };
 
   return (
     <div className="Signup-container">
+      <LoadingModal isLoading={isLoading} />
+
       <form
         className="Signup-Form"
         onSubmit={(e) => onJoin(e)}
@@ -335,6 +340,9 @@ const SignupForm = ({
           }
         }}
       >
+        <a href="/">
+          <img className="logo" src={logo} alt="logo" />
+        </a>
         <h1>회원가입</h1>
         <div className="Signup-email-container">
           <label htmlFor="Signup-email">이메일</label>

@@ -1,12 +1,15 @@
 import React, { useRef, useState } from "react";
-
 import "../../styles/ContainerModal.css";
-
-import * as auth from "../../apis/auth";
 import Loading from "../Loading";
 import axios from "axios";
 
-function ContainerEdit({ editOwner, isOpen, close, selectedContainerId }) {
+function ContainerEdit({
+  editShare,
+  editOwner,
+  isOpen,
+  close,
+  selectedContainerId,
+}) {
   const [isLoading, setIsLoading] = useState(false);
   let isFirstLoading = useRef(true);
   // 컨테이너 정보
@@ -15,7 +18,6 @@ function ContainerEdit({ editOwner, isOpen, close, selectedContainerId }) {
 
   if (!isOpen) return null;
   const containerId = selectedContainerId.containerId;
-  console.log(containerId);
   //----------------------------------------------------------------컨테이너 내용
   const onChangeContainerDescription = (event) => {
     setContainerDescription(event.target.value);
@@ -40,6 +42,7 @@ function ContainerEdit({ editOwner, isOpen, close, selectedContainerId }) {
       if (response.status === 200) {
         alert("성공적으로 변경하셨습니다 :)");
         editOwner(containerId, desc);
+        editShare(containerId, desc);
         close();
       }
     } catch (error) {
@@ -76,10 +79,11 @@ function ContainerEdit({ editOwner, isOpen, close, selectedContainerId }) {
           <h3>프로젝트 설명</h3>
           <textarea
             type="text"
-            placeholder="프로젝트 수정 설명을 입력하세요..."
+            placeholder="(최대 254자)프로젝트 수정 설명을 입력하세요..."
             name="containerDescription"
             value={containerDescription}
             onChange={onChangeContainerDescription}
+            max-length="254"
           ></textarea>
 
           <div className="buttons">

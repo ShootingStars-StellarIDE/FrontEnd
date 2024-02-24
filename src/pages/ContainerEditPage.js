@@ -20,6 +20,7 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import ChatBubble from "../components/ContainerList/ChatBubble";
 
 import "../styles/ContainerEditPage.css";
+import logo from "../assets/logo_stellar.png";
 
 function ContainerEditPage() {
   const params = useParams();
@@ -41,6 +42,7 @@ function ContainerEditPage() {
   const editorValue = useRef(null);
   const yorkieDoc = useRef(null);
   const yorkieClient = useRef(null);
+  const yorkieKey = process.env.REACT_APP_YORKIE_API_KEY;
   const [updateTimeout, setUpdateTimeout] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -62,25 +64,37 @@ function ContainerEditPage() {
   }, [treeData]);
 
   const getFileType = async () => {
-    const res = await axios.get(`api/container/type/` + params.containerId, {
-      headers: { Authorization: token },
-    });
-    if (res.status === 200) {
-      setFileType(res.data);
+    try {
+      const res = await axios.get(`api/container/type/` + params.containerId, {
+        headers: { Authorization: token },
+      });
+      if (res.status === 200) {
+        setFileType(res.data);
+      }
+    } catch (error) {
+      const errorInfo = error.response.data;
+      alert(errorInfo.description);
     }
   };
 
   // 파일 트리 조회
   const fetchTreeData = async () => {
     setIsLoading(true);
-    const res = await axios.get(
-      `api/container/treeInfo/` + params.containerId,
-      {
-        headers: { Authorization: token },
+
+    try {
+      const res = await axios.get(
+        `api/container/treeInfo/` + params.containerId,
+        {
+          headers: { Authorization: token },
+        }
+      );
+      if (res.status === 200) {
+        setTreeData(res.data);
       }
-    );
-    if (res.status === 200) {
-      setTreeData(res.data);
+    } catch (error) {
+      const errorInfo = error.response.data;
+      alert(errorInfo.description);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -204,19 +218,25 @@ function ContainerEditPage() {
   // 파일 내용 조회
   const fetchFileData = async (filePath) => {
     setIsLoading(true);
-    const res = await axios.get(
-      `/api/container/fileContent?containerId=` +
-        params.containerId +
-        `&filePath=` +
-        filePath,
-      {
-        headers: { Authorization: token },
-      }
-    );
 
-    if (res.status === 200) {
+    try {
+      const res = await axios.get(
+        `/api/container/fileContent?containerId=` +
+          params.containerId +
+          `&filePath=` +
+          filePath,
+        {
+          headers: { Authorization: token },
+        }
+      );
+      if (res.status === 200) {
+        return res.data;
+      }
+    } catch (error) {
+      const errorInfo = error.response.data;
+      alert(errorInfo.description);
+    } finally {
       setIsLoading(false);
-      return res.data;
     }
   };
 
@@ -238,26 +258,22 @@ function ContainerEditPage() {
     );
     const fileName = realPath.split("/").pop();
     const fileContent = editorRef.current?.getValue();
-
-    const res = await axios.post(
-      `/api/container/saveFile`,
-      { containerId, path, fileName, fileContent },
-      {
-        headers: { Authorization: token },
+    try {
+      const res = await axios.post(
+        `/api/container/saveFile`,
+        { containerId, path, fileName, fileContent },
+        {
+          headers: { Authorization: token },
+        }
+      );
+      if (res.status === 200) {
+        alert("파일이 저장되었습니다.");
       }
-    );
-
-    if (res.status === 200) {
-      alert("파일이 저장되었습니다.");
+    } catch (error) {
+      const errorInfo = error.response.data;
+      alert(errorInfo.description);
+    } finally {
       setIsLoading(false);
-    } else if (res.data.code === "1201") {
-      alert("존재하지 않는 사용자입니다.");
-    } else if (res.data.code === "2200") {
-      alert("존재하지 않는 컨테이너입니다.");
-    } else if (res.data.code === "2100") {
-      alert("해당 컨테이너에 대한 권한이 없습니다.");
-    } else if (res.data.code === "0004") {
-      alert("명령어 실행에 실패하였습니다.");
     }
   };
 
@@ -284,21 +300,25 @@ function ContainerEditPage() {
     } else {
       path = parts.slice(1, parts.length).join("/");
     }
+    try {
+      const res = await axios.post(
+        `/api/container/execution`,
+        { containerId, path },
+        {
+          headers: { Authorization: token },
+        }
+      );
 
-    const res = await axios.post(
-      `/api/container/execution`,
-      { containerId, path },
-      {
-        headers: { Authorization: token },
+      if (res.status === 200) {
+        setExecResult(res.data);
+        fetchTreeData();
       }
-    );
-
-    if (res.status === 200) {
-      setExecResult(res.data);
-      fetchTreeData();
+    } catch (error) {
+      const errorInfo = error.response.data;
+      alert(errorInfo.description);
+      // setExecResult("실행에 실패했습니다.");
+    } finally {
       setIsLoading(false);
-    } else {
-      setExecResult("실행에 실패했습니다.");
     }
   };
 
@@ -325,55 +345,69 @@ function ContainerEditPage() {
     );
 
     if (selectedItemPath.type === "file") {
-      const res = await axios.delete(
-        `/api/container/deleteFile?containerId=` +
-          containerId +
-          `&path=` +
-          path +
-          `&fileName=` +
-          fileName,
-        {
-          headers: { Authorization: token },
-        }
-      );
-
-      if (res.status === 200) {
-        yorkieDoc.current.update((root) => {
-          root.content = "";
-        });
-        await yorkieClient.current.detach(yorkieDoc.current);
-
-        const deletedPath = selectedItemPath.path.replace(/\//g, "-");
-        const tabIndex = editors.findIndex(
-          (editor) => editor.path === deletedPath
+      try {
+        const res = await axios.delete(
+          `/api/container/deleteFile?containerId=` +
+            containerId +
+            `&path=` +
+            path +
+            `&fileName=` +
+            fileName,
+          {
+            headers: { Authorization: token },
+          }
         );
-        if (tabIndex !== -1) {
-          handleCloseTab(tabIndex);
+
+        if (res.status === 200) {
+          yorkieDoc.current.update((root) => {
+            root.content = "";
+          });
+          await yorkieClient.current.detach(yorkieDoc.current);
+
+          const deletedPath = selectedItemPath.path.replace(/\//g, "-");
+          const tabIndex = editors.findIndex(
+            (editor) => editor.path === deletedPath
+          );
+          if (tabIndex !== -1) {
+            handleCloseTab(tabIndex);
+          }
+          fetchTreeData();
+          alert("삭제되었습니다.");
         }
-        fetchTreeData();
-        alert("삭제되었습니다.");
+      } catch (error) {
+        const errorInfo = error.response.data;
+        alert(errorInfo.description);
+      } finally {
+        setIsLoading(false);
       }
     } else {
-      const res = await axios.delete(
-        `/api/container/deleteDirectory?containerId=` +
-          containerId +
-          `&path=` +
-          path +
-          `&directoryName=` +
-          directoryName,
-        {
-          headers: { Authorization: token },
-        }
-      );
+      try {
+        const res = await axios.delete(
+          `/api/container/deleteDirectory?containerId=` +
+            containerId +
+            `&path=` +
+            path +
+            `&directoryName=` +
+            directoryName,
+          {
+            headers: { Authorization: token },
+          }
+        );
 
-      if (res.status === 200) {
-        fetchTreeData();
-        alert("삭제에 성공했습니다.");
+        if (res.status === 200) {
+          fetchTreeData();
+          alert("삭제에 성공했습니다.");
+        }
+      } catch (error) {
+        const errorInfo = error.response.data;
+        alert(errorInfo.description);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
 
-  const InputModal = ({ isOpen, onClose, onSubmit }) => {
+  const InputModal = ({ isOpen, onClose, onSubmit, title }) => {
     const [input, setInput] = useState("");
 
     const handleSubmit = () => {
@@ -413,6 +447,7 @@ function ContainerEditPage() {
             borderRadius: "8px",
           }}
         >
+          <h5>{title}</h5>
           <input
             type="text"
             value={input}
@@ -426,7 +461,7 @@ function ContainerEditPage() {
             <button
               className="input-modal-button"
               style={{
-                backgroundColor: "#4CAF50",
+                backgroundColor: "#4ed9a5",
                 color: "white",
                 border: "none",
                 padding: "6px 10px",
@@ -499,18 +534,24 @@ function ContainerEditPage() {
         selectedItemPath.path.lastIndexOf("/") + 1
       );
     }
+    try {
+      const res = await axios.post(
+        `/api/container/createFile`,
+        { containerId, path, fileName },
+        {
+          headers: { Authorization: token },
+        }
+      );
 
-    const res = await axios.post(
-      `/api/container/createFile`,
-      { containerId, path, fileName },
-      {
-        headers: { Authorization: token },
+      if (res.status === 200) {
+        fetchTreeData();
+        alert("파일이 생성되었습니다.");
       }
-    );
-
-    if (res.status === 200) {
-      fetchTreeData();
-      alert("파일이 생성되었습니다.");
+    } catch (error) {
+      const errorInfo = error.response.data;
+      alert(errorInfo.description);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -535,18 +576,24 @@ function ContainerEditPage() {
         selectedItemPath.path.lastIndexOf("/") + 1
       );
     }
+    try {
+      const res = await axios.post(
+        `/api/container/createDirectory`,
+        { containerId, path, directoryName },
+        {
+          headers: { Authorization: token },
+        }
+      );
 
-    const res = await axios.post(
-      `/api/container/createDirectory`,
-      { containerId, path, directoryName },
-      {
-        headers: { Authorization: token },
+      if (res.status === 200) {
+        fetchTreeData();
+        alert("디렉토리가 생성되었습니다.");
       }
-    );
-
-    if (res.status === 200) {
-      fetchTreeData();
-      alert("디렉토리가 생성되었습니다.");
+    } catch (error) {
+      const errorInfo = error.response.data;
+      alert(errorInfo.description);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -608,7 +655,7 @@ function ContainerEditPage() {
   // Yorkie 생성
   const initYorkie = async (docName) => {
     const client = new yorkie.Client("https://api.yorkie.dev", {
-      apiKey: "cn7m65tafcg8gj9icml0",
+      apiKey: yorkieKey,
     });
     await client.activate();
     const doc = new yorkie.Document(docName);
@@ -923,7 +970,7 @@ function ContainerEditPage() {
         ) : (
           <div className="editor-placeholder">
             <div className="editor-image">
-              {/* <img src="f" /> */}
+              <img className="logo" src={logo} alt="logo"></img>
               <p>Stellar-IDE ver.1</p>
               <p>주의사항</p>
               <p>- 실행하기 전에 꼭 저장해주세요.</p>
@@ -942,6 +989,13 @@ function ContainerEditPage() {
         <ChatBubble containerId={params.containerId} />
         <LoadingModal isLoading={isLoading} />
         <InputModal
+          title={
+            modalAction === "createFile"
+              ? "새파일 생성하기"
+              : modalAction === "createDir"
+              ? "새디렉토리 생성하기"
+              : ""
+          }
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onSubmit={(value) => {

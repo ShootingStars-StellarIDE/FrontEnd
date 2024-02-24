@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
 // import { useParams, useNavigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import "../styles/Sidebar.css";
 import "../styles/UserProfile.css";
 import "../styles/ContainerListPage.css";
-import * as auth from "../apis/auth";
-
 import Sidebar from "../components/ContainerList/Sidebar";
 import UserProfile from "../components/UserProfile/UserProfile";
-import ChatBubble from "../components/ContainerList/ChatBubble";
 import axios from "axios";
 
 function ProfilePage() {
@@ -26,8 +22,7 @@ function ProfilePage() {
         let response = await axios.get(`/api/user/profile`, {
           headers: { Authorization: token },
         });
-        console.log(response);
-        if (response.status == 200) {
+        if (response.status === 200) {
           setUserEmail(response.data.email);
           setUserNickname(response.data.nickname);
           setUserProfileImgUrl(response.data.profileImgUrl);
@@ -35,7 +30,6 @@ function ProfilePage() {
           setUserSharedContainers(response.data.sharedContainers);
         }
       } catch (error) {
-        console.log(error);
         if (error.response.data.code === "0100") {
           // 인증에 실패하였습니다.
           console.error(error.response.data.description);

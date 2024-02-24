@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import * as auth from "../../apis/auth";
 import Loading from "../Loading";
 import axios from "axios";
+import dmimg from "../../assets/Sample_User_Icon.png";
 
 function Sidebar({ nickname, profileimgurl }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,14 +34,12 @@ function Sidebar({ nickname, profileimgurl }) {
       const res = await axios.delete(`/api/auth/logout`, {
         headers: { Authorization: token },
       });
-      console.log(res);
       if (res.status === 200) {
         localStorage.removeItem("Authorization");
         alert("다음에 또 봐요 우리👋");
         navigate("/");
       }
     } catch (error) {
-      console.log(error);
       const errorRes = error.response.data;
       if (errorRes.code === "1004") {
         // 잘못된 형식의 비밀번호입니다.
@@ -132,10 +131,7 @@ function Sidebar({ nickname, profileimgurl }) {
             <summary>DM</summary>
             {dmusers.map((dmuser, dmlistkey) => (
               <div key={dmlistkey} onClick={DmUserClick}>
-                <img
-                  src="https://exp.goorm.io/_next/image?url=https%3A%2F%2Fexp-upload.goorm.io%2F2023-11-13%2FN%2FN20D3vbX1qrGSyOcnU.webp&w=96&q=75"
-                  alt="DmIcon"
-                />
+                <img src={dmimg} alt="DmIcon" />
                 <p>{dmuser}</p>
               </div>
             ))}

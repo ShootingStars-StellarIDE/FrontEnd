@@ -45,7 +45,6 @@ function ContainerModal({ isOpen, close, addOwner }) {
         { containerType, containerName, containerDescription },
         { headers: { Authorization: token } }
       );
-      console.log(response);
       if (response.status === 200) {
         addOwner(response.data);
         alert("성공적으로 생성하셨습니다 :)");
@@ -53,7 +52,7 @@ function ContainerModal({ isOpen, close, addOwner }) {
         close();
       }
     } catch (error) {
-      alert(`${error.response.data.description}`);
+      alert(error.response.data.description);
     } finally {
       if (isFirstLoading) {
         setIsLoading(false); // 데이터 불러오기 완료
@@ -128,18 +127,20 @@ function ContainerModal({ isOpen, close, addOwner }) {
           <h3>프로젝트 이름</h3>
           <input
             type="text"
-            placeholder="(영문,숫자 로 이루어진)프로젝트 이름을 입력하세요"
+            placeholder="(영문,숫자 로 이루어진 최대 20자)프로젝트 이름을 입력하세요"
             name="containerName"
             value={containerName}
             onChange={onChangeContainerName}
+            maxlength="20"
           />
           <h3>프로젝트 설명</h3>
           <textarea
             type="text"
-            placeholder="프로젝트 설명을 입력하세요..."
+            placeholder="(최대 254자)프로젝트 설명을 입력하세요..."
             name="containerDescription"
             value={containerDescription}
             onChange={onChangeContainerDescription}
+            maxlength="254"
           ></textarea>
 
           <div className="buttons">
