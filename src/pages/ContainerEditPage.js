@@ -15,6 +15,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import FolderIcon from "@mui/icons-material/Folder";
+import HomeIcon from "@mui/icons-material/Home";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
 import ChatBubble from "../components/ContainerList/ChatBubble";
@@ -786,12 +787,6 @@ function ContainerEditPage() {
       createYorkieDoc(tabName.current);
     }
   }, []);
-  // containerName-filePath로 doc를 생성
-  useEffect(() => {
-    if (tabName.current !== null) {
-      createYorkieDoc(tabName.current);
-    }
-  }, []);
 
   const createYorkieDoc = async (docName) => {
     setIsLoading(true);
@@ -924,60 +919,65 @@ function ContainerEditPage() {
 
   return (
     <div className="edit-page">
-      <div className="tree-container" style={{ width: treeWidth }}>
-        <div className="tree-bar">
-          <div>
-            <IconButton onClick={handleCreateDirClick} sx={{ color: "white" }}>
-              <CreateNewFolderIcon fontSize="medium" />
-            </IconButton>
-            <IconButton onClick={handleCreateFileClick} sx={{ color: "white" }}>
-              <NoteAddIcon fontSize="medium" />
-            </IconButton>
-            {/* <IconButton onClick={handleRenameClick} sx={{ color: "white" }}>
+      <div className="tree-container" style={{width: treeWidth}}>
+        <div>
+          <div className="tree-bar">
+            <div>
+              <IconButton onClick={handleCreateDirClick} sx={{color: "white"}}>
+                <CreateNewFolderIcon fontSize="medium"/>
+              </IconButton>
+              <IconButton onClick={handleCreateFileClick} sx={{color: "white"}}>
+                <NoteAddIcon fontSize="medium"/>
+              </IconButton>
+              {/* <IconButton onClick={handleRenameClick} sx={{ color: "white" }}>
             <EditIcon fontSize="medium" />
           </IconButton> */}
-            <IconButton onClick={handleDelete} sx={{ color: "white" }}>
-              <DeleteIcon fontSize="medium" />
-            </IconButton>
+              <IconButton onClick={handleDelete} sx={{color: "white"}}>
+                <DeleteIcon fontSize="medium"/>
+              </IconButton>
+            </div>
+            <div>
+              <IconButton onClick={handleRefresh} sx={{color: "white"}}>
+                <RefreshIcon fontSize="medium"/>
+              </IconButton>
+            </div>
           </div>
-          <div>
-            <IconButton onClick={handleRefresh} sx={{ color: "white" }}>
-              <RefreshIcon fontSize="medium" />
-            </IconButton>
+          <div className="tree-main">
+            <Tree data={treeData}/>
           </div>
+          <div className="resize-handle-vertical" onMouseDown={startResizeTree}/>
         </div>
-        <div className="tree-main">
-          <Tree data={treeData} />
+        <div className={"goHome"}>
+          <a className={"goHomeLink"} href={"/dashboard/containers"}><HomeIcon></HomeIcon></a>
         </div>
-        <div className="resize-handle-vertical" onMouseDown={startResizeTree} />
       </div>
 
       <div className="editor-container">
         {editors.length > 0 ? (
-          <div className="tabs-container">
-            <Tabs>
-              {editors.map((editor, index) => (
-                <Tab
-                  key={index}
-                  label={editor.label}
-                  path={editor.path}
-                  onClose={() => handleCloseTab(index)}
-                ></Tab>
-              ))}
-            </Tabs>
-            <div>{editors[activeTab].content}</div>
-          </div>
+            <div className="tabs-container">
+              <Tabs>
+                {editors.map((editor, index) => (
+                    <Tab
+                        key={index}
+                        label={editor.label}
+                        path={editor.path}
+                        onClose={() => handleCloseTab(index)}
+                    ></Tab>
+                ))}
+              </Tabs>
+              <div>{editors[activeTab].content}</div>
+            </div>
         ) : (
-          <div className="editor-placeholder">
-            <div className="editor-image">
-              <img className="logo" src={logo} alt="logo"></img>
-              <p>Stellar-IDE ver.1</p>
-              <p>주의사항</p>
-              <p>- 실행하기 전에 꼭 저장해주세요.</p>
-              <p>- 파일이나 디렉토리 이름은 중복이 불가능합니다.</p>
-              <p>- 새로고침 버튼을 누르면 파일을 다시 조회합니다.</p>
-              <p>
-                - 컨테이너명, src, project 디렉토리를 삭제할 시 문제가 발생할 수
+            <div className="editor-placeholder">
+              <div className="editor-image">
+                <img className="logo" src={logo} alt="logo"></img>
+                <p>Stellar-IDE ver.1</p>
+                <p>주의사항</p>
+                <p>- 실행하기 전에 꼭 저장해주세요.</p>
+                <p>- 파일이나 디렉토리 이름은 중복이 불가능합니다.</p>
+                <p>- 새로고침 버튼을 누르면 파일을 다시 조회합니다.</p>
+                <p>
+                  - 컨테이너명, src, project 디렉토리를 삭제할 시 문제가 발생할 수
                 있습니다.
               </p>
             </div>
