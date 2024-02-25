@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
@@ -11,7 +11,7 @@ import Loading from "./components/Loading";
 function App() {
   return (
     <div className="App-header">
-      <Router>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Routes>
           <Route path={"/"} element={<LoginPage />} />
           <Route path={"/signup"} element={<SignUpPage />} />
@@ -25,7 +25,7 @@ function App() {
             element={<ContainerEditPage />}
           />
         </Routes>
-      </Router>
+      </BrowserRouter>
     </div>
   );
 }
